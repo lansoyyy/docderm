@@ -19,9 +19,9 @@ class ButtonWidget extends StatelessWidget {
       this.textColor = Colors.white,
       required this.onPressed,
       this.width = 275,
-      this.fontSize = 18,
+      this.fontSize = 16,
       this.height = 60,
-      this.color = Colors.red});
+      this.color = primary});
   @override
   Widget build(BuildContext context) {
     return MaterialButton(
@@ -35,7 +35,7 @@ class ButtonWidget extends StatelessWidget {
           text: label,
           fontSize: fontSize!,
           color: textColor,
-          fontFamily: 'Bold',
+          fontFamily: 'Medium',
         ));
   }
 }
