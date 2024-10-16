@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <!--
     If you are serving your web app in a path other than the root, change the
@@ -27,12 +28,39 @@
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
   <!-- Favicon -->
-  <link rel="icon" type="image/png" href="favicon.png"/>
+  <link rel="icon" type="image/png" href="favicon.png" />
 
   <title>docderm</title>
   <link rel="manifest" href="manifest.json">
 </head>
+
 <body>
   <script src="flutter_bootstrap.js" async></script>
+  </script>
+  <script src="main.dart.js" type="application/javascript"></script>
+  <script type="module">
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-app.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-core.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-auth.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-storage.js";
+
+
+    // Your web app's Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    const firebaseConfig = {
+      apiKey: "AIzaSyAqxg3mkfYh6gOJkScF9UqyOm_5UQxafdE",
+      authDomain: "docderm-54b6f.firebaseapp.com",
+      projectId: "docderm-54b6f",
+      storageBucket: "docderm-54b6f.appspot.com",
+      messagingSenderId: "889291875183",
+      appId: "1:889291875183:web:ae83f561d9a80cee277e9a"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+  </script>
 </body>
+
 </html>
