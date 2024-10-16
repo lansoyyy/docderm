@@ -1,3 +1,4 @@
+import 'package:docderm/screens/tabs/chat_tab.dart';
 import 'package:docderm/screens/tabs/create_tab.dart';
 import 'package:docderm/screens/tabs/home_tab.dart';
 import 'package:docderm/utils/colors.dart';
@@ -21,7 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
     {'icon': Icons.create, 'name': 'Create'},
     {'icon': Icons.chat_bubble_outline_outlined, 'name': 'Chat'},
     {'icon': Icons.notifications, 'name': 'Notifications'},
-    {'icon': Icons.history, 'name': 'Recent'},
+    // {'icon': Icons.history, 'name': 'Recent'},
     {'icon': Icons.groups_2_outlined, 'name': 'Community'},
   ];
 
@@ -30,9 +31,9 @@ class _HomeScreenState extends State<HomeScreen> {
   List tabs = [
     const HomeTab(),
     const CreateTab(),
+    const ChatTab(),
     const SizedBox(),
-    const SizedBox(),
-    const SizedBox(),
+    // const SizedBox(),
     const SizedBox(),
   ];
 
@@ -122,9 +123,13 @@ class _HomeScreenState extends State<HomeScreen> {
                           padding: const EdgeInsets.only(bottom: 20),
                           child: GestureDetector(
                             onTap: () {
-                              setState(() {
-                                index = i;
-                              });
+                              if (i == 3) {
+                                showNotifs();
+                              } else {
+                                setState(() {
+                                  index = i;
+                                });
+                              }
                             },
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -171,6 +176,68 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  showNotifs() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          child: SizedBox(
+            width: 500,
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TextWidget(
+                    text: 'Notifications',
+                    fontSize: 18,
+                    fontFamily: 'Bold',
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  for (int i = 0; i < 5; i++)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10, bottom: 10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          const Icon(
+                            Icons.notifications,
+                            size: 50,
+                            color: Colors.red,
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          TextWidget(
+                            text: 'Notification title',
+                            fontSize: 18,
+                            fontFamily: 'Bold',
+                          ),
+                          const Expanded(
+                            child: SizedBox(
+                              width: 10,
+                            ),
+                          ),
+                          TextWidget(
+                            text: 'Date and Time',
+                            fontSize: 14,
+                            fontFamily: 'Medium',
+                          ),
+                        ],
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }
