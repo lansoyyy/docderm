@@ -1,4 +1,5 @@
 import 'package:docderm/screens/tabs/chat_tab.dart';
+import 'package:docderm/screens/tabs/community_tab.dart';
 import 'package:docderm/screens/tabs/create_tab.dart';
 import 'package:docderm/screens/tabs/home_tab.dart';
 import 'package:docderm/utils/colors.dart';
@@ -34,7 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
     const ChatTab(),
     const SizedBox(),
     // const SizedBox(),
-    const SizedBox(),
+    const CommunityTab(),
   ];
 
   @override
