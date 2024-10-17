@@ -1,6 +1,11 @@
+import 'package:docderm/screens/home_screen.dart';
+import 'package:docderm/services/add_user.dart';
 import 'package:docderm/utils/colors.dart';
 import 'package:docderm/widgets/button_widget.dart';
 import 'package:docderm/widgets/text_widget.dart';
+import 'package:docderm/widgets/textfield_widget.dart';
+import 'package:docderm/widgets/toast_widget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class LandingScreen extends StatefulWidget {
@@ -33,6 +38,11 @@ class _LandingScreenState extends State<LandingScreen> {
   ];
 
   List medias = ['fb', 'twitter', 'tiktok', 'ig'];
+
+  final username = TextEditingController();
+  final password = TextEditingController();
+  final name = TextEditingController();
+  final number = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -85,7 +95,14 @@ class _LandingScreenState extends State<LandingScreen> {
                       width: 100,
                       fontSize: 14,
                       label: 'Signup',
-                      onPressed: () {},
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return Dialog(child: register());
+                          },
+                        );
+                      },
                     ),
                   ],
                 ),
@@ -456,5 +473,102 @@ Other Terms and Policies
         ),
       ),
     );
+  }
+
+  Widget register() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 30, bottom: 30),
+      child: SizedBox(
+        height: 500,
+        width: 350,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(
+                Icons.account_circle,
+                size: 75,
+              ),
+              TextWidget(
+                text: 'Create Account',
+                fontSize: 32,
+                fontFamily: 'Bold',
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              TextFieldWidget(
+                label: 'Fullname  ',
+                controller: name,
+              ),
+              TextFieldWidget(
+                label: 'Contact Number  ',
+                controller: number,
+              ),
+              TextFieldWidget(
+                label: 'Username  ',
+                controller: username,
+              ),
+              TextFieldWidget(
+                isObscure: true,
+                showEye: true,
+                label: 'Password  ',
+                controller: password,
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              ButtonWidget(
+                width: 300,
+                label: 'Register',
+                onPressed: () {
+                  Navigator.pop(context);
+                  registerUser(context);
+                },
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  registerUser(context) async {
+    try {
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: username.text, password: password.text);
+
+      addUser(name.text, username.text, number.text);
+
+      // signup(nameController.text, numberController.text, addressController.text,
+      //     emailController.text);
+
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: username.text, password: password.text);
+
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
+      );
+      showToast("Registered Successfully!");
+
+      Navigator.pop(context);
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        showToast('The password provided is too weak.');
+      } else if (e.code == 'email-already-in-use') {
+        showToast('The account already exists for that email.');
+      } else if (e.code == 'invalid-email') {
+        showToast('The email address is not valid.');
+      } else {
+        showToast(e.toString());
+      }
+    } on Exception catch (e) {
+      showToast("An error occurred: $e");
+    }
   }
 }

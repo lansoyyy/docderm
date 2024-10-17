@@ -41,23 +41,6 @@ class _CreateTabState extends State<CreateTab> {
                 const SizedBox(
                   height: 10,
                 ),
-                Container(
-                  width: 250,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[300],
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  child: Center(
-                    child: TextWidget(
-                      text: 'Select Community',
-                      fontSize: 14,
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
                 TextFieldWidget(
                   label: 'Type here...',
                   controller: desc,

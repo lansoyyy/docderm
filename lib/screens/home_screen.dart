@@ -1,9 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:docderm/screens/tabs/chat_tab.dart';
 import 'package:docderm/screens/tabs/community_tab.dart';
 import 'package:docderm/screens/tabs/create_tab.dart';
 import 'package:docderm/screens/tabs/home_tab.dart';
+import 'package:docderm/services/create_community.dart';
 import 'package:docderm/utils/colors.dart';
+import 'package:docderm/utils/const.dart';
+import 'package:docderm/widgets/button_widget.dart';
 import 'package:docderm/widgets/text_widget.dart';
+import 'package:docderm/widgets/textfield_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:sidebarx/sidebarx.dart';
 
@@ -41,6 +46,25 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: index == 4
+          ? FloatingActionButton(
+              backgroundColor: primary,
+              child: const Icon(
+                Icons.add,
+                color: Colors.white,
+              ),
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return Dialog(
+                      child: createCommunity(),
+                    );
+                  },
+                );
+              },
+            )
+          : null,
       body: Column(
         children: [
           Container(
@@ -239,6 +263,60 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         );
       },
+    );
+  }
+
+  final name = TextEditingController();
+
+  Widget createCommunity() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 30, bottom: 30),
+      child: SizedBox(
+        height: 350,
+        width: 350,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextWidget(
+                text: 'Create Community',
+                fontSize: 32,
+                fontFamily: 'Bold',
+              ),
+              const SizedBox(
+                height: 50,
+              ),
+              TextFieldWidget(
+                label: 'Community Name  ',
+                controller: name,
+              ),
+              const SizedBox(
+                height: 50,
+              ),
+              ButtonWidget(
+                width: 300,
+                label: 'Create',
+                onPressed: () async {
+                  Navigator.pop(context);
+                  final id = await addCommunity(name.text);
+
+                  await FirebaseFirestore.instance
+                      .collection('Users')
+                      .doc(userId)
+                      .update({
+                    'community': FieldValue.arrayUnion([id]),
+                  });
+                },
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
