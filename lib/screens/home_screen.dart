@@ -10,7 +10,9 @@ import 'package:docderm/widgets/button_widget.dart';
 import 'package:docderm/widgets/text_widget.dart';
 import 'package:docderm/widgets/textfield_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:sidebarx/sidebarx.dart';
+import 'package:tflite_web/tflite_web.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -20,6 +22,25 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    getmyData();
+  }
+
+  String myname = '';
+  String email = '';
+
+  getmyData() async {
+    DocumentSnapshot documentSnapshot =
+        await FirebaseFirestore.instance.collection('Users').doc(userId).get();
+
+    setState(() {
+      myname = documentSnapshot['name'];
+      email = documentSnapshot['email'];
+    });
+  }
+
   final searchController = TextEditingController();
   String nameSearched = '';
 
@@ -45,6 +66,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final Stream<DocumentSnapshot> userData =
+        FirebaseFirestore.instance.collection('Users').doc(userId).snapshots();
     return Scaffold(
       floatingActionButton: index == 4
           ? FloatingActionButton(
@@ -182,9 +205,52 @@ class _HomeScreenState extends State<HomeScreen> {
                           height: 20,
                         ),
                       ),
-                      Image.asset(
-                        'assets/images/image 344.png',
-                        height: 50,
+                      PopupMenuButton(
+                        icon: Image.asset(
+                          'assets/images/image 344.png',
+                          height: 50,
+                        ),
+                        itemBuilder: (context) {
+                          return [
+                            PopupMenuItem(
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Image.asset(
+                                    'assets/images/image 344.png',
+                                    height: 50,
+                                  ),
+                                  const SizedBox(
+                                    width: 15,
+                                  ),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      TextWidget(
+                                        text: myname,
+                                        fontSize: 16,
+                                        fontFamily: 'Bold',
+                                      ),
+                                      const SizedBox(
+                                        height: 3,
+                                      ),
+                                      TextWidget(
+                                        text: email,
+                                        fontSize: 12,
+                                        fontFamily: 'Regular',
+                                        color: Colors.grey,
+                                        isItalize: true,
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ];
+                        },
                       ),
                       const SizedBox(
                         height: 20,
@@ -213,52 +279,77 @@ class _HomeScreenState extends State<HomeScreen> {
             width: 500,
             child: Padding(
               padding: const EdgeInsets.all(20.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  TextWidget(
-                    text: 'Notifications',
-                    fontSize: 18,
-                    fontFamily: 'Bold',
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  for (int i = 0; i < 5; i++)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10, bottom: 10),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          const Icon(
-                            Icons.notifications,
-                            size: 50,
-                            color: Colors.red,
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          TextWidget(
-                            text: 'Notification title',
-                            fontSize: 18,
-                            fontFamily: 'Bold',
-                          ),
-                          const Expanded(
-                            child: SizedBox(
-                              width: 10,
+              child: StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance
+                      .collection('Notifs')
+                      // .where('otherUserId', isEqualTo: userId)
+                      .snapshots(),
+                  builder: (BuildContext context,
+                      AsyncSnapshot<QuerySnapshot> snapshot) {
+                    if (snapshot.hasError) {
+                      print(snapshot.error);
+                      return const Center(child: Text('Error'));
+                    }
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Padding(
+                        padding: EdgeInsets.only(top: 50),
+                        child: Center(
+                            child: CircularProgressIndicator(
+                          color: Colors.black,
+                        )),
+                      );
+                    }
+
+                    final data = snapshot.requireData;
+                    return Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        TextWidget(
+                          text: 'Notifications',
+                          fontSize: 18,
+                          fontFamily: 'Bold',
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        for (int i = 0; i < data.docs.length; i++)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 10, bottom: 10),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                const Icon(
+                                  Icons.notifications,
+                                  size: 50,
+                                  color: Colors.red,
+                                ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                TextWidget(
+                                  text: data.docs[i]['msg'],
+                                  fontSize: 16,
+                                  fontFamily: 'Bold',
+                                  maxLines: 3,
+                                ),
+                                const Expanded(
+                                  child: SizedBox(
+                                    width: 10,
+                                  ),
+                                ),
+                                TextWidget(
+                                  text: DateFormat.yMMMd().add_jm().format(
+                                      data.docs[i]['dateTime'].toDate()),
+                                  fontSize: 14,
+                                  fontFamily: 'Medium',
+                                ),
+                              ],
                             ),
                           ),
-                          TextWidget(
-                            text: 'Date and Time',
-                            fontSize: 14,
-                            fontFamily: 'Medium',
-                          ),
-                        ],
-                      ),
-                    ),
-                ],
-              ),
+                      ],
+                    );
+                  }),
             ),
           ),
         );

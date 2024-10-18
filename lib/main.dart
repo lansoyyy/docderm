@@ -3,9 +3,11 @@ import 'package:docderm/screens/landing_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:tflite_web/tflite_web.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await TFLiteWeb.initialize();
   await Firebase.initializeApp(
       options: const FirebaseOptions(
           apiKey: "AIzaSyAqxg3mkfYh6gOJkScF9UqyOm_5UQxafdE",

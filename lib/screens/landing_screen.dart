@@ -508,7 +508,7 @@ Other Terms and Policies
                 controller: number,
               ),
               TextFieldWidget(
-                label: 'Username  ',
+                label: 'Email  ',
                 controller: username,
               ),
               TextFieldWidget(

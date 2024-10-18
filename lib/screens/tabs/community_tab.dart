@@ -12,60 +12,79 @@ class CommunityTab extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SizedBox(
-          width: 600,
-          height: 600,
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                for (int i = 0; i < 5; i++)
-                  Card(
-                    child: SizedBox(
-                      width: 600,
-                      height: 250,
-                      child: Padding(
-                        padding: const EdgeInsets.all(20.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Image.asset(
-                                  'assets/images/image 344.png',
-                                  height: 50,
-                                ),
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                                TextWidget(
-                                  text: 'John Doe',
-                                  fontSize: 18,
-                                  fontFamily: 'Bold',
-                                ),
-                              ],
+        StreamBuilder<QuerySnapshot>(
+            stream: FirebaseFirestore.instance.collection('Post').snapshots(),
+            builder:
+                (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+              if (snapshot.hasError) {
+                print(snapshot.error);
+                return const Center(child: Text('Error'));
+              }
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Padding(
+                  padding: EdgeInsets.only(top: 50),
+                  child: Center(
+                      child: CircularProgressIndicator(
+                    color: Colors.black,
+                  )),
+                );
+              }
+
+              final data = snapshot.requireData;
+              return SizedBox(
+                width: 600,
+                height: 600,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      for (int i = 0; i < data.docs.length; i++)
+                        Card(
+                          child: SizedBox(
+                            width: 600,
+                            height: 250,
+                            child: Padding(
+                              padding: const EdgeInsets.all(20.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Image.asset(
+                                        'assets/images/image 344.png',
+                                        height: 50,
+                                      ),
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                      TextWidget(
+                                        text: data.docs[i]['myname'],
+                                        fontSize: 18,
+                                        fontFamily: 'Bold',
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 20,
+                                  ),
+                                  TextWidget(
+                                    maxLines: 100,
+                                    text: data.docs[i]['desc'],
+                                    fontSize: 14,
+                                    fontFamily: 'Medium',
+                                    color: Colors.grey,
+                                  ),
+                                ],
+                              ),
                             ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            TextWidget(
-                              maxLines: 100,
-                              text:
-                                  'Nulla consectetur exercitation minim culpa sunt id consectetur dolor consequat cillum enim. Eu magna cupidatat dolor consequat ipsum sint nulla enim ea reprehenderit exercitation. Aliqua reprehenderit deserunt ad sint labore excepteur nulla ut ullamco mollit. Officia dolore cillum eu non excepteur ullamco excepteur amet sit pariatur minim sint. Lorem commodo cupidatat eiusmod qui est culpa Lorem.',
-                              fontSize: 14,
-                              fontFamily: 'Medium',
-                              color: Colors.grey,
-                            ),
-                          ],
+                          ),
                         ),
-                      ),
-                    ),
+                    ],
                   ),
-              ],
-            ),
-          ),
-        ),
+                ),
+              );
+            }),
         const SizedBox(
           width: 20,
         ),

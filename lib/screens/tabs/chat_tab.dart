@@ -1,5 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:docderm/services/add_messages.dart';
+import 'package:docderm/utils/const.dart';
 import 'package:docderm/widgets/text_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart' show DateFormat, toBeginningOfSentenceCase;
 
 class ChatTab extends StatefulWidget {
   const ChatTab({super.key});
@@ -11,6 +15,9 @@ class ChatTab extends StatefulWidget {
 class _ChatTabState extends State<ChatTab> {
   final searchController = TextEditingController();
   String nameSearched = '';
+
+  final msg = TextEditingController();
+  String id = '';
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -75,127 +82,215 @@ class _ChatTabState extends State<ChatTab> {
                       ),
                     ),
                   ),
-                  for (int i = 0; i < 5; i++)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10, bottom: 10),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Image.asset(
-                            'assets/images/image 344.png',
-                            height: 50,
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          TextWidget(
-                            text: 'John Doe',
-                            fontSize: 18,
-                            fontFamily: 'Bold',
-                          ),
-                        ],
-                      ),
-                    ),
+                  StreamBuilder<QuerySnapshot>(
+                      stream: FirebaseFirestore.instance
+                          .collection('Users')
+                          .where('id', isNotEqualTo: userId)
+                          .where('name',
+                              isGreaterThanOrEqualTo:
+                                  toBeginningOfSentenceCase(nameSearched))
+                          .where('name',
+                              isLessThan:
+                                  '${toBeginningOfSentenceCase(nameSearched)}z')
+                          .snapshots(),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<QuerySnapshot> snapshot) {
+                        if (snapshot.hasError) {
+                          print(snapshot.error);
+                          return const Center(child: Text('Error'));
+                        }
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Padding(
+                            padding: EdgeInsets.only(top: 50),
+                            child: Center(
+                                child: CircularProgressIndicator(
+                              color: Colors.black,
+                            )),
+                          );
+                        }
+
+                        final data = snapshot.requireData;
+                        return Column(
+                          children: [
+                            for (int i = 0; i < data.docs.length; i++)
+                              GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    id = data.docs[i].id;
+                                  });
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 10, bottom: 10),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Image.asset(
+                                        'assets/images/image 344.png',
+                                        height: 50,
+                                      ),
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                      TextWidget(
+                                        text: data.docs[i]['name'],
+                                        fontSize: 18,
+                                        fontFamily: 'Bold',
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                          ],
+                        );
+                      }),
                 ],
               ),
               const VerticalDivider(),
-              Column(
-                children: [
-                  // Message list
-                  SizedBox(
-                    width: 500,
-                    height: 400,
-                    child: ListView.builder(
-                      padding: const EdgeInsets.all(10),
-                      itemCount:
-                          10, // You can replace this with dynamic message length
-                      itemBuilder: (context, index) {
-                        bool isSender = index % 2 == 0;
-                        return Align(
-                          alignment: isSender
-                              ? Alignment.centerRight
-                              : Alignment.centerLeft,
-                          child: Container(
-                            margin: const EdgeInsets.symmetric(vertical: 5),
-                            padding: const EdgeInsets.all(12),
-                            constraints: BoxConstraints(
-                                maxWidth:
-                                    MediaQuery.of(context).size.width * 0.7),
-                            decoration: BoxDecoration(
-                              color: isSender ? Colors.blue[100] : Colors.white,
-                              borderRadius: BorderRadius.only(
-                                topLeft: const Radius.circular(12),
-                                topRight: const Radius.circular(12),
-                                bottomLeft: isSender
-                                    ? const Radius.circular(12)
-                                    : Radius.zero,
-                                bottomRight: isSender
-                                    ? Radius.zero
-                                    : const Radius.circular(12),
+              id == ''
+                  ? const SizedBox()
+                  : StreamBuilder<QuerySnapshot>(
+                      stream: FirebaseFirestore.instance
+                          .collection('Chats')
+                          .where('ids', arrayContains: userId)
+                          .orderBy('dateTime', descending: true)
+                          .snapshots(),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<QuerySnapshot> snapshot1) {
+                        if (snapshot1.hasError) {
+                          print(snapshot1.error);
+                          return const Text('Error');
+                        }
+                        if (snapshot1.connectionState ==
+                            ConnectionState.waiting) {
+                          return const CircularProgressIndicator();
+                        }
+
+                        // Get the documents with userId
+                        final docsUserId = snapshot1.data?.docs ?? [];
+
+                        // Now filter documents with id from the userId docs
+                        final filteredDocs = docsUserId.where((doc) {
+                          return (doc.data() as Map<String, dynamic>)['ids']
+                              .contains(id);
+                        }).toList();
+                        return Column(
+                          children: [
+                            // Message list
+                            SizedBox(
+                              width: 500,
+                              height: 400,
+                              child: ListView.builder(
+                                padding: const EdgeInsets.all(10),
+                                itemCount: filteredDocs
+                                    .length, // You can replace this with dynamic message length
+                                itemBuilder: (context, index) {
+                                  bool isSender =
+                                      filteredDocs[index]['sender'] == userId;
+                                  return Align(
+                                    alignment: isSender
+                                        ? Alignment.centerRight
+                                        : Alignment.centerLeft,
+                                    child: Container(
+                                      margin: const EdgeInsets.symmetric(
+                                          vertical: 5),
+                                      padding: const EdgeInsets.all(12),
+                                      constraints: BoxConstraints(
+                                          maxWidth: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.7),
+                                      decoration: BoxDecoration(
+                                        color: isSender
+                                            ? Colors.blue[100]
+                                            : Colors.white,
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: const Radius.circular(12),
+                                          topRight: const Radius.circular(12),
+                                          bottomLeft: isSender
+                                              ? const Radius.circular(12)
+                                              : Radius.zero,
+                                          bottomRight: isSender
+                                              ? Radius.zero
+                                              : const Radius.circular(12),
+                                        ),
+                                        boxShadow: const [
+                                          BoxShadow(
+                                            color: Colors.black12,
+                                            blurRadius: 4,
+                                            offset: Offset(0, 2),
+                                          ),
+                                        ],
+                                      ),
+                                      child: TextWidget(
+                                        text: filteredDocs[index]['msg'],
+                                        fontSize: 16,
+                                        fontFamily: 'Regular',
+                                        color: Colors.black87,
+                                        isBold: false,
+                                        maxLines: 3,
+                                        align: TextAlign.start,
+                                      ),
+                                    ),
+                                  );
+                                },
                               ),
-                              boxShadow: const [
-                                BoxShadow(
-                                  color: Colors.black12,
-                                  blurRadius: 4,
-                                  offset: Offset(0, 2),
-                                ),
-                              ],
                             ),
-                            child: TextWidget(
-                              text: 'This is message $index',
-                              fontSize: 16,
-                              fontFamily: 'Regular',
-                              color: Colors.black87,
-                              isBold: false,
-                              maxLines: 3,
-                              align: TextAlign.start,
+                            // Message input area
+                            Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: Row(
+                                children: [
+                                  SizedBox(
+                                    width: 400,
+                                    height: 45,
+                                    child: Expanded(
+                                      child: TextField(
+                                        controller: msg,
+                                        maxLines: 1,
+                                        decoration: InputDecoration(
+                                          hintText: 'Type your message...',
+                                          contentPadding:
+                                              const EdgeInsets.symmetric(
+                                                  vertical: 10, horizontal: 15),
+                                          filled: true,
+                                          fillColor: Colors.white,
+                                          border: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(30),
+                                            borderSide: BorderSide.none,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 10),
+                                  FloatingActionButton(
+                                    onPressed: () async {
+                                      DocumentSnapshot documentSnapshot =
+                                          await FirebaseFirestore.instance
+                                              .collection('Users')
+                                              .doc(userId)
+                                              .get();
+                                      addMessages(id, msg.text,
+                                          documentSnapshot['name']);
+
+                                      msg.clear();
+                                      // Implement your message send action here
+                                    },
+                                    backgroundColor: Colors.blueAccent,
+                                    child: const Icon(
+                                      Icons.send,
+                                      color: Colors.white,
+                                    ),
+                                  )
+                                ],
+                              ),
                             ),
-                          ),
+                          ],
                         );
-                      },
-                    ),
-                  ),
-                  // Message input area
-                  Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          width: 400,
-                          height: 45,
-                          child: Expanded(
-                            child: TextField(
-                              maxLines: 1,
-                              decoration: InputDecoration(
-                                hintText: 'Type your message...',
-                                contentPadding: const EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 15),
-                                filled: true,
-                                fillColor: Colors.white,
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(30),
-                                  borderSide: BorderSide.none,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        FloatingActionButton(
-                          onPressed: () {
-                            // Implement your message send action here
-                          },
-                          backgroundColor: Colors.blueAccent,
-                          child: const Icon(
-                            Icons.send,
-                            color: Colors.white,
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+                      }),
             ],
           ),
         ),
