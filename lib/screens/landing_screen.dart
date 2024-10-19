@@ -59,37 +59,7 @@ class _LandingScreenState extends State<LandingScreen> {
                       'assets/images/Group 358.png',
                       height: 25,
                     ),
-                    Row(
-                      children: [
-                        TextButton(
-                          onPressed: () {},
-                          child: TextWidget(
-                            text: 'Home',
-                            fontSize: 18,
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 20,
-                        ),
-                        TextButton(
-                          onPressed: () {},
-                          child: TextWidget(
-                            text: 'About Us',
-                            fontSize: 18,
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 20,
-                        ),
-                        TextButton(
-                          onPressed: () {},
-                          child: TextWidget(
-                            text: 'Private Policy',
-                            fontSize: 18,
-                          ),
-                        ),
-                      ],
-                    ),
+                    const SizedBox(),
                     ButtonWidget(
                       height: 40,
                       width: 100,
