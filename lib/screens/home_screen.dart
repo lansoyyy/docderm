@@ -95,7 +95,7 @@ class _HomeScreenState extends State<HomeScreen> {
             height: 80,
             color: secondary,
             child: Padding(
-              padding: const EdgeInsets.only(left: 30, right: 30),
+              padding: const EdgeInsets.symmetric(horizontal: 30),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -103,39 +103,41 @@ class _HomeScreenState extends State<HomeScreen> {
                     'assets/images/Group 358.png',
                     height: 25,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 10, 0, 20),
-                    child: Container(
-                      height: 40,
-                      width: 300,
-                      decoration: BoxDecoration(
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(10, 10, 0, 20),
+                      child: Container(
+                        height: 40,
+                        decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius: BorderRadius.circular(100)),
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: Center(
+                          borderRadius: BorderRadius.circular(100),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
                           child: TextFormField(
                             style: const TextStyle(
-                                color: Colors.black,
-                                fontFamily: 'Regular',
-                                fontSize: 14),
+                              color: Colors.black,
+                              fontFamily: 'Regular',
+                              fontSize: 14,
+                            ),
                             onChanged: (value) {
                               setState(() {
                                 nameSearched = value;
                               });
                             },
                             decoration: const InputDecoration(
-                                border: InputBorder.none,
-                                labelStyle: TextStyle(
-                                  color: Colors.black,
-                                ),
-                                hintText: 'Search DocDerm',
-                                hintStyle: TextStyle(
-                                    fontFamily: 'Regular', fontSize: 16),
-                                prefixIcon: Icon(
-                                  Icons.search,
-                                  color: Colors.grey,
-                                )),
+                              border: InputBorder.none,
+                              labelStyle: TextStyle(color: Colors.black),
+                              hintText: 'Search DocDerm',
+                              hintStyle: TextStyle(
+                                fontFamily: 'Regular',
+                                fontSize: 16,
+                              ),
+                              prefixIcon: Icon(
+                                Icons.search,
+                                color: Colors.grey,
+                              ),
+                            ),
                             controller: searchController,
                           ),
                         ),
@@ -146,124 +148,121 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ),
-          const SizedBox(
-            height: 50,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 30, right: 30),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  width: 100,
-                  height: 500,
-                  decoration: BoxDecoration(
-                      color: secondary,
-                      borderRadius: BorderRadius.circular(10)),
-                  child: Column(
-                    children: [
-                      const SizedBox(
-                        height: 20,
+          const SizedBox(height: 50),
+          LayoutBuilder(
+            builder: (context, constraints) {
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 30),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: constraints.maxWidth *
+                          0.2, // Adjust width proportionally
+                      height: 500,
+                      decoration: BoxDecoration(
+                        color: secondary,
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                      for (int i = 0; i < items.length; i++)
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 20),
-                          child: GestureDetector(
-                            onTap: () {
-                              if (i == 3) {
-                                showNotifs();
-                              } else {
-                                setState(() {
-                                  index = i;
-                                });
-                              }
-                            },
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  items[i]['icon'],
-                                  size: 25,
-                                  color:
-                                      index == i ? Colors.white : Colors.black,
+                      child: Column(
+                        children: [
+                          const SizedBox(height: 20),
+                          for (int i = 0; i < items.length; i++)
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 20),
+                              child: GestureDetector(
+                                onTap: () {
+                                  if (i == 3) {
+                                    showNotifs();
+                                  } else {
+                                    setState(() {
+                                      index = i;
+                                    });
+                                  }
+                                },
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      items[i]['icon'],
+                                      size: 25,
+                                      color: index == i
+                                          ? Colors.white
+                                          : Colors.black,
+                                    ),
+                                    TextWidget(
+                                      text: items[i]['name'],
+                                      fontSize: 12,
+                                      fontFamily:
+                                          index == i ? 'Bold' : 'Medium',
+                                      color: index == i
+                                          ? Colors.white
+                                          : Colors.black,
+                                    ),
+                                  ],
                                 ),
-                                TextWidget(
-                                  text: items[i]['name'],
-                                  fontSize: 12,
-                                  fontFamily: index == i ? 'Bold' : 'Medium',
-                                  color:
-                                      index == i ? Colors.white : Colors.black,
-                                ),
-                              ],
+                              ),
                             ),
-                          ),
-                        ),
-                      const Expanded(
-                        child: SizedBox(
-                          height: 20,
-                        ),
-                      ),
-                      PopupMenuButton(
-                        icon: Image.asset(
-                          'assets/images/image 344.png',
-                          height: 50,
-                        ),
-                        itemBuilder: (context) {
-                          return [
-                            PopupMenuItem(
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Image.asset(
-                                    'assets/images/image 344.png',
-                                    height: 50,
-                                  ),
-                                  const SizedBox(
-                                    width: 15,
-                                  ),
-                                  Column(
+                          const Expanded(child: SizedBox(height: 20)),
+                          PopupMenuButton(
+                            icon: Image.asset(
+                              'assets/images/image 344.png',
+                              height: 50,
+                            ),
+                            itemBuilder: (context) {
+                              return [
+                                PopupMenuItem(
+                                  child: Row(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
-                                      TextWidget(
-                                        text: myname,
-                                        fontSize: 16,
-                                        fontFamily: 'Bold',
+                                      Image.asset(
+                                        'assets/images/image 344.png',
+                                        height: 50,
                                       ),
-                                      const SizedBox(
-                                        height: 3,
-                                      ),
-                                      TextWidget(
-                                        text: email,
-                                        fontSize: 12,
-                                        fontFamily: 'Regular',
-                                        color: Colors.grey,
-                                        isItalize: true,
+                                      const SizedBox(width: 15),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          TextWidget(
+                                            text: myname,
+                                            fontSize: 16,
+                                            fontFamily: 'Bold',
+                                          ),
+                                          const SizedBox(height: 3),
+                                          TextWidget(
+                                            text: email,
+                                            fontSize: 12,
+                                            fontFamily: 'Regular',
+                                            color: Colors.grey,
+                                            isItalize: true,
+                                          ),
+                                        ],
                                       ),
                                     ],
                                   ),
-                                ],
-                              ),
-                            ),
-                          ];
-                        },
+                                ),
+                              ];
+                            },
+                          ),
+                          const SizedBox(height: 20),
+                        ],
                       ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(width: 30),
+                    Expanded(
+                      child: tabs[index],
+                    ),
+                  ],
                 ),
-                const SizedBox(
-                  width: 30,
-                ),
-                tabs[index],
-              ],
-            ),
+              );
+            },
           ),
         ],
       ),

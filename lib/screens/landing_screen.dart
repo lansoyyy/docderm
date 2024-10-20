@@ -45,10 +45,14 @@ class _LandingScreenState extends State<LandingScreen> {
   final number = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    // Define breakpoints for mobile
+    double screenWidth = MediaQuery.of(context).size.width;
+    bool isMobile = screenWidth < 600; // Mobile breakpoint
+
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(50, 20, 50, 20),
+          padding: const EdgeInsets.all(20), // Adjusted padding for mobile
           child: SingleChildScrollView(
             child: Column(
               children: [
@@ -57,13 +61,13 @@ class _LandingScreenState extends State<LandingScreen> {
                   children: [
                     Image.asset(
                       'assets/images/Group 358.png',
-                      height: 25,
+                      height: isMobile ? 20 : 25, // Smaller height for mobile
                     ),
                     const SizedBox(),
                     ButtonWidget(
-                      height: 40,
-                      width: 100,
-                      fontSize: 14,
+                      height: isMobile ? 35 : 40, // Smaller button for mobile
+                      width: isMobile ? 80 : 100,
+                      fontSize: isMobile ? 12 : 14,
                       label: 'Signup',
                       onPressed: () {
                         showDialog(
@@ -76,129 +80,120 @@ class _LandingScreenState extends State<LandingScreen> {
                     ),
                   ],
                 ),
-                const SizedBox(
-                  height: 50,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                const SizedBox(height: 30), // Adjusted spacing
+                Column(
+                  crossAxisAlignment: isMobile
+                      ? CrossAxisAlignment.center
+                      : CrossAxisAlignment.start,
                   children: [
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    TextWidget(
+                      text: 'Welcome to ',
+                      fontSize: isMobile ? 35 : 45, // Smaller font for mobile
+                      fontFamily: 'Regular',
+                    ),
+                    TextWidget(
+                      text: 'Your Skin’s Sanctuary ',
+                      fontSize: isMobile ? 35 : 45,
+                      fontFamily: 'Bold',
+                      color: primary,
+                    ),
+                    const SizedBox(height: 25),
+                    SizedBox(
+                      width: isMobile
+                          ? double.infinity
+                          : 450, // Full width for mobile
+                      child: TextWidget(
+                        maxLines: 5,
+                        text:
+                            'DocDerm isn’t just a website; it’s a supportive community. Share your journey, connect with others, and find solace in knowing that you’re part of something bigger.',
+                        fontSize: isMobile ? 12 : 14, // Smaller font for mobile
+                        fontFamily: 'Regular',
+                      ),
+                    ),
+                    const SizedBox(height: 25),
+                    Row(
+                      mainAxisAlignment: isMobile
+                          ? MainAxisAlignment.center
+                          : MainAxisAlignment.start,
                       children: [
-                        TextWidget(
-                          text: 'Welcome to ',
-                          fontSize: 45,
-                          fontFamily: 'Regular',
+                        ButtonWidget(
+                          height: isMobile ? 35 : 40,
+                          width: isMobile ? 80 : 100,
+                          fontSize: isMobile ? 12 : 14,
+                          label: 'Read More',
+                          onPressed: () {},
                         ),
-                        TextWidget(
-                          text: 'Your Skin’s Sanctuary ',
-                          fontSize: 45,
-                          fontFamily: 'Bold',
-                          color: primary,
-                        ),
-                        const SizedBox(
-                          height: 25,
-                        ),
-                        SizedBox(
-                          width: 450,
-                          child: TextWidget(
-                            maxLines: 5,
-                            text:
-                                'DocDerm isn’t just a website; it’s a supportive community. Share your journey, connect with others, and find solace in knowing that you’re part of something bigger.',
-                            fontSize: 14,
-                            fontFamily: 'Regular',
+                        const SizedBox(width: 20),
+                        Container(
+                          height: isMobile ? 30 : 33,
+                          width: isMobile ? 80 : 100,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(100),
+                            border: Border.all(color: Colors.black),
                           ),
-                        ),
-                        const SizedBox(
-                          height: 25,
-                        ),
-                        Row(
-                          children: [
-                            ButtonWidget(
-                              height: 40,
-                              width: 100,
-                              fontSize: 14,
-                              label: 'Read More',
-                              onPressed: () {},
+                          child: Center(
+                            child: TextWidget(
+                              text: "Let’s Start",
+                              fontSize: isMobile ? 12 : 14,
+                              fontFamily: 'Regular',
                             ),
-                            const SizedBox(
-                              width: 25,
-                            ),
-                            Container(
-                              height: 33,
-                              width: 100,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(100),
-                                border: Border.all(
-                                  color: Colors.black,
-                                ),
-                              ),
-                              child: Center(
-                                child: TextWidget(
-                                  text: "Let’s Start",
-                                  fontSize: 14,
-                                  fontFamily: 'Regular',
-                                ),
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
                       ],
                     ),
-                    Image.asset(
-                      'assets/images/image 285.png',
-                      width: 600,
-                    ),
                   ],
                 ),
-                const SizedBox(
-                  height: 50,
-                ),
+                const SizedBox(height: 30),
+                if (!isMobile)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Image.asset(
+                        'assets/images/image 285.png',
+                        width: 600,
+                      ),
+                    ],
+                  )
+                else
+                  Image.asset(
+                    'assets/images/image 285.png',
+                    width: 300, // Smaller image for mobile
+                  ),
+                const SizedBox(height: 30),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const SizedBox(
                       width: 400,
-                      child: Divider(
-                        color: Colors.grey,
-                      ),
+                      child: Divider(color: Colors.grey),
                     ),
-                    const SizedBox(
-                      width: 25,
-                    ),
+                    const SizedBox(width: 15),
                     TextWidget(
                       text: 'DocDerm Offers',
-                      fontSize: 38,
+                      fontSize: isMobile ? 30 : 38,
                       fontFamily: 'Bold',
                       color: primary,
                     ),
-                    const SizedBox(
-                      width: 25,
-                    ),
+                    const SizedBox(width: 15),
                     const SizedBox(
                       width: 400,
-                      child: Divider(
-                        color: Colors.grey,
-                      ),
+                      child: Divider(color: Colors.grey),
                     ),
                   ],
                 ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                const SizedBox(height: 20),
+                Wrap(
+                  spacing: 15, // Use Wrap for responsiveness in mobile view
+                  runSpacing: 20,
+                  alignment: WrapAlignment.center,
                   children: [
                     for (int i = 0; i < items.length; i++)
                       Container(
-                        width: 330,
+                        width: isMobile ? 250 : 330, // Smaller width for mobile
                         height: 430,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(15),
-                          border: Border.all(
-                            color: primary,
-                          ),
+                          border: Border.all(color: primary),
                         ),
                         child: Padding(
                           padding: const EdgeInsets.all(15.0),
@@ -208,26 +203,25 @@ class _LandingScreenState extends State<LandingScreen> {
                             children: [
                               Image.asset(
                                 'assets/images/${items[i]['img']}.png',
-                                width: 280,
+                                width:
+                                    isMobile ? 220 : 280, // Adjusted image size
                               ),
-                              const SizedBox(
-                                height: 20,
-                              ),
+                              const SizedBox(height: 20),
                               TextWidget(
                                 text: items[i]['title'],
-                                fontSize: 24,
+                                fontSize: isMobile ? 20 : 24,
                                 fontFamily: 'Bold',
                                 color: primary,
                               ),
-                              const SizedBox(
-                                height: 10,
-                              ),
+                              const SizedBox(height: 10),
                               SizedBox(
-                                width: 450,
+                                width: isMobile
+                                    ? double.infinity
+                                    : 450, // Adjusted for mobile
                                 child: TextWidget(
                                   maxLines: 5,
                                   text: items[i]['desc'],
-                                  fontSize: 12,
+                                  fontSize: isMobile ? 10 : 12,
                                   fontFamily: 'Regular',
                                 ),
                               ),
@@ -237,58 +231,50 @@ class _LandingScreenState extends State<LandingScreen> {
                       ),
                   ],
                 ),
-                const SizedBox(
-                  height: 50,
-                ),
-                const Divider(
-                  color: Colors.grey,
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
+                const SizedBox(height: 50),
+                const Divider(color: Colors.grey),
+                const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Image.asset(
                       'assets/images/image 315.png',
-                      width: 600,
+                      width: isMobile
+                          ? 300
+                          : 600, // Adjusted image width for mobile
                     ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        TextWidget(
-                          text: 'About DocDerm  ',
-                          fontSize: 32,
-                          fontFamily: 'Bold',
-                          color: primary,
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        SizedBox(
-                          width: 425,
-                          child: TextWidget(
-                            maxLines: 20,
-                            text:
-                                'We are a dedicated team of students from CSTC Sariaya, driven by compassion and innovation. Our mission is to create a responsive web-based community platform that empowers individuals with skin conditions. By fostering a safe space, we aim to break down stigma, provide expert guidance, and enhance the quality of life for those seeking support. Join us in building a community where everyone’s voice matters! ',
-                            fontSize: 14,
-                            fontFamily: 'Regular',
+                    if (!isMobile)
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          TextWidget(
+                            text: 'About DocDerm  ',
+                            fontSize: 32,
+                            fontFamily: 'Bold',
+                            color: primary,
                           ),
-                        ),
-                      ],
-                    ),
+                          const SizedBox(height: 10),
+                          SizedBox(
+                            width: 425,
+                            child: TextWidget(
+                              maxLines: 20,
+                              text:
+                                  'We are a dedicated team of students from CSTC Sariaya, driven by compassion and innovation. Our mission is to create a responsive web-based community platform that empowers individuals with skin conditions.',
+                              fontSize: 14,
+                              fontFamily: 'Regular',
+                            ),
+                          ),
+                        ],
+                      ),
                   ],
                 ),
-                const SizedBox(
-                  height: 50,
-                ),
+                const SizedBox(height: 50),
                 Container(
                   height: 400,
                   width: double.infinity,
                   color: primary,
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(50, 20, 50, 20),
+                    padding: const EdgeInsets.all(20),
                     child: Column(
                       children: [
                         Row(
@@ -299,135 +285,34 @@ class _LandingScreenState extends State<LandingScreen> {
                               children: [
                                 TextWidget(
                                   text: 'FOLLOW US',
-                                  fontSize: 24,
+                                  fontSize: isMobile ? 20 : 24,
                                   fontFamily: 'Bold',
                                   color: Colors.white,
                                 ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
+                                const SizedBox(height: 10),
                                 SizedBox(
-                                  width: 300,
+                                  width: isMobile ? 200 : 300,
                                   child: TextWidget(
                                     maxLines: 5,
                                     text:
-                                        'Stay updated on DocDerm’s latest news and developments by following our social media accounts!',
-                                    fontSize: 14,
+                                        'Stay updated on DocDerm’s latest news by following our social media accounts!',
+                                    fontSize: isMobile ? 12 : 14,
                                     fontFamily: 'Regular',
                                     color: Colors.white,
                                   ),
                                 ),
-                                const SizedBox(
-                                  height: 20,
-                                ),
-                                Row(
-                                  children: [
-                                    for (int i = 0; i < medias.length; i++)
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 10),
-                                        child: Container(
-                                          width: 60,
-                                          height: 60,
-                                          decoration: BoxDecoration(
-                                            border: Border.all(
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Image.asset(
-                                              'assets/images/${medias[i]}.png',
-                                              height: 15,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                  ],
-                                ),
                               ],
                             ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                TextWidget(
-                                  text: 'COMMUNITY',
-                                  fontSize: 24,
-                                  fontFamily: 'Bold',
-                                  color: Colors.white,
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                SizedBox(
-                                  width: 300,
-                                  child: TextWidget(
-                                    maxLines: 5,
-                                    text: '''
-DocDerm.com
-DocDerm for Community
-Content Policy
-Help Center
-Moderator Code of Conduct
-''',
-                                    fontSize: 14,
-                                    fontFamily: 'Regular',
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 20,
-                                ),
-                              ],
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                TextWidget(
-                                  text: 'PRIVACY & SAFETY',
-                                  fontSize: 24,
-                                  fontFamily: 'Bold',
-                                  color: Colors.white,
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                SizedBox(
-                                  width: 300,
-                                  child: TextWidget(
-                                    maxLines: 5,
-                                    text: '''
-Privacy Policy
-User Agreement
-Transparency Report
-d/docdermsecurity
-Other Terms and Policies
-''',
-                                    fontSize: 14,
-                                    fontFamily: 'Regular',
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 20,
-                                ),
-                              ],
-                            ),
+                            // Add additional columns here similarly if needed
                           ],
                         ),
-                        const SizedBox(
-                          height: 50,
-                        ),
-                        const Divider(
-                          color: Colors.white,
-                        ),
-                        const SizedBox(
-                          height: 50,
-                        ),
+                        const SizedBox(height: 50),
+                        const Divider(color: Colors.white),
+                        const SizedBox(height: 50),
                         Center(
                           child: TextWidget(
                             text:
-                                'Copyright ©DocDerm. All Rights Reserved.Designed by JTech Inc.',
+                                'Copyright ©DocDerm. All Rights Reserved. Designed by JTech Inc.',
                             fontSize: 24,
                             fontFamily: 'Bold',
                             color: Colors.white,
@@ -439,6 +324,404 @@ Other Terms and Policies
                 ),
               ],
             ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  webview() {
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(50, 20, 50, 20),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Image.asset(
+                    'assets/images/Group 358.png',
+                    height: 25,
+                  ),
+                  const SizedBox(),
+                  ButtonWidget(
+                    height: 40,
+                    width: 100,
+                    fontSize: 14,
+                    label: 'Signup',
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return Dialog(child: register());
+                        },
+                      );
+                    },
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 50,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      TextWidget(
+                        text: 'Welcome to ',
+                        fontSize: 45,
+                        fontFamily: 'Regular',
+                      ),
+                      TextWidget(
+                        text: 'Your Skin’s Sanctuary ',
+                        fontSize: 45,
+                        fontFamily: 'Bold',
+                        color: primary,
+                      ),
+                      const SizedBox(
+                        height: 25,
+                      ),
+                      SizedBox(
+                        width: 450,
+                        child: TextWidget(
+                          maxLines: 5,
+                          text:
+                              'DocDerm isn’t just a website; it’s a supportive community. Share your journey, connect with others, and find solace in knowing that you’re part of something bigger.',
+                          fontSize: 14,
+                          fontFamily: 'Regular',
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 25,
+                      ),
+                      Row(
+                        children: [
+                          ButtonWidget(
+                            height: 40,
+                            width: 100,
+                            fontSize: 14,
+                            label: 'Read More',
+                            onPressed: () {},
+                          ),
+                          const SizedBox(
+                            width: 25,
+                          ),
+                          Container(
+                            height: 33,
+                            width: 100,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(100),
+                              border: Border.all(
+                                color: Colors.black,
+                              ),
+                            ),
+                            child: Center(
+                              child: TextWidget(
+                                text: "Let’s Start",
+                                fontSize: 14,
+                                fontFamily: 'Regular',
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  Image.asset(
+                    'assets/images/image 285.png',
+                    width: 600,
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 50,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const SizedBox(
+                    width: 400,
+                    child: Divider(
+                      color: Colors.grey,
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 25,
+                  ),
+                  TextWidget(
+                    text: 'DocDerm Offers',
+                    fontSize: 38,
+                    fontFamily: 'Bold',
+                    color: primary,
+                  ),
+                  const SizedBox(
+                    width: 25,
+                  ),
+                  const SizedBox(
+                    width: 400,
+                    child: Divider(
+                      color: Colors.grey,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  for (int i = 0; i < items.length; i++)
+                    Container(
+                      width: 330,
+                      height: 430,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        border: Border.all(
+                          color: primary,
+                        ),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(15.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              'assets/images/${items[i]['img']}.png',
+                              width: 280,
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            TextWidget(
+                              text: items[i]['title'],
+                              fontSize: 24,
+                              fontFamily: 'Bold',
+                              color: primary,
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            SizedBox(
+                              width: 450,
+                              child: TextWidget(
+                                maxLines: 5,
+                                text: items[i]['desc'],
+                                fontSize: 12,
+                                fontFamily: 'Regular',
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+              const SizedBox(
+                height: 50,
+              ),
+              const Divider(
+                color: Colors.grey,
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Image.asset(
+                    'assets/images/image 315.png',
+                    width: 600,
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      TextWidget(
+                        text: 'About DocDerm  ',
+                        fontSize: 32,
+                        fontFamily: 'Bold',
+                        color: primary,
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      SizedBox(
+                        width: 425,
+                        child: TextWidget(
+                          maxLines: 20,
+                          text:
+                              'We are a dedicated team of students from CSTC Sariaya, driven by compassion and innovation. Our mission is to create a responsive web-based community platform that empowers individuals with skin conditions. By fostering a safe space, we aim to break down stigma, provide expert guidance, and enhance the quality of life for those seeking support. Join us in building a community where everyone’s voice matters! ',
+                          fontSize: 14,
+                          fontFamily: 'Regular',
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 50,
+              ),
+              Container(
+                height: 400,
+                width: double.infinity,
+                color: primary,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(50, 20, 50, 20),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              TextWidget(
+                                text: 'FOLLOW US',
+                                fontSize: 24,
+                                fontFamily: 'Bold',
+                                color: Colors.white,
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              SizedBox(
+                                width: 300,
+                                child: TextWidget(
+                                  maxLines: 5,
+                                  text:
+                                      'Stay updated on DocDerm’s latest news and developments by following our social media accounts!',
+                                  fontSize: 14,
+                                  fontFamily: 'Regular',
+                                  color: Colors.white,
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              Row(
+                                children: [
+                                  for (int i = 0; i < medias.length; i++)
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 10),
+                                      child: Container(
+                                        width: 60,
+                                        height: 60,
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Image.asset(
+                                            'assets/images/${medias[i]}.png',
+                                            height: 15,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              TextWidget(
+                                text: 'COMMUNITY',
+                                fontSize: 24,
+                                fontFamily: 'Bold',
+                                color: Colors.white,
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              SizedBox(
+                                width: 300,
+                                child: TextWidget(
+                                  maxLines: 5,
+                                  text: '''
+DocDerm.com
+DocDerm for Community
+Content Policy
+Help Center
+Moderator Code of Conduct
+''',
+                                  fontSize: 14,
+                                  fontFamily: 'Regular',
+                                  color: Colors.white,
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                            ],
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              TextWidget(
+                                text: 'PRIVACY & SAFETY',
+                                fontSize: 24,
+                                fontFamily: 'Bold',
+                                color: Colors.white,
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              SizedBox(
+                                width: 300,
+                                child: TextWidget(
+                                  maxLines: 5,
+                                  text: '''
+Privacy Policy
+User Agreement
+Transparency Report
+d/docdermsecurity
+Other Terms and Policies
+''',
+                                  fontSize: 14,
+                                  fontFamily: 'Regular',
+                                  color: Colors.white,
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 50,
+                      ),
+                      const Divider(
+                        color: Colors.white,
+                      ),
+                      const SizedBox(
+                        height: 50,
+                      ),
+                      Center(
+                        child: TextWidget(
+                          text:
+                              'Copyright ©DocDerm. All Rights Reserved.Designed by JTech Inc.',
+                          fontSize: 24,
+                          fontFamily: 'Bold',
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),

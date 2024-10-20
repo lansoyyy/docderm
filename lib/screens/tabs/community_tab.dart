@@ -12,7 +12,9 @@ class CommunityTab extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        StreamBuilder<QuerySnapshot>(
+        Expanded(
+          flex: 2, // Adjusts the weight of this section
+          child: StreamBuilder<QuerySnapshot>(
             stream: FirebaseFirestore.instance.collection('Post').snapshots(),
             builder:
                 (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -24,23 +26,27 @@ class CommunityTab extends StatelessWidget {
                 return const Padding(
                   padding: EdgeInsets.only(top: 50),
                   child: Center(
-                      child: CircularProgressIndicator(
-                    color: Colors.black,
-                  )),
+                    child: CircularProgressIndicator(
+                      color: Colors.black,
+                    ),
+                  ),
                 );
               }
 
               final data = snapshot.requireData;
               return SizedBox(
-                width: 600,
-                height: 600,
+                width: MediaQuery.of(context).size.width *
+                    0.45, // Responsive width
+                height: MediaQuery.of(context).size.height *
+                    0.7, // Responsive height
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
                       for (int i = 0; i < data.docs.length; i++)
                         Card(
                           child: SizedBox(
-                            width: 600,
+                            width: double
+                                .infinity, // Make card width take full width
                             height: 250,
                             child: Padding(
                               padding: const EdgeInsets.all(20.0),
@@ -84,16 +90,20 @@ class CommunityTab extends StatelessWidget {
                   ),
                 ),
               );
-            }),
+            },
+          ),
+        ),
         const SizedBox(
           width: 20,
         ),
-        SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              StreamBuilder<QuerySnapshot>(
+        Expanded(
+          flex: 1, // Adjusts the weight of this section
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                StreamBuilder<QuerySnapshot>(
                   stream: FirebaseFirestore.instance
                       .collection('Community')
                       .where('members', arrayContains: userId)
@@ -108,16 +118,18 @@ class CommunityTab extends StatelessWidget {
                       return const Padding(
                         padding: EdgeInsets.only(top: 50),
                         child: Center(
-                            child: CircularProgressIndicator(
-                          color: Colors.black,
-                        )),
+                          child: CircularProgressIndicator(
+                            color: Colors.black,
+                          ),
+                        ),
                       );
                     }
 
                     final data = snapshot.requireData;
                     return Card(
                       child: SizedBox(
-                        width: 400,
+                        width:
+                            double.infinity, // Make card width take full width
                         height: 250,
                         child: Padding(
                           padding: const EdgeInsets.all(20.0),
@@ -183,11 +195,12 @@ class CommunityTab extends StatelessWidget {
                         ),
                       ),
                     );
-                  }),
-              const SizedBox(
-                height: 10,
-              ),
-              StreamBuilder<QuerySnapshot>(
+                  },
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                StreamBuilder<QuerySnapshot>(
                   stream: FirebaseFirestore.instance
                       .collection('Community')
                       .snapshots(),
@@ -201,9 +214,10 @@ class CommunityTab extends StatelessWidget {
                       return const Padding(
                         padding: EdgeInsets.only(top: 50),
                         child: Center(
-                            child: CircularProgressIndicator(
-                          color: Colors.black,
-                        )),
+                          child: CircularProgressIndicator(
+                            color: Colors.black,
+                          ),
+                        ),
                       );
                     }
 
@@ -211,7 +225,8 @@ class CommunityTab extends StatelessWidget {
 
                     return Card(
                       child: SizedBox(
-                        width: 400,
+                        width:
+                            double.infinity, // Make card width take full width
                         height: 250,
                         child: Padding(
                           padding: const EdgeInsets.all(20.0),
@@ -356,8 +371,10 @@ class CommunityTab extends StatelessWidget {
                         ),
                       ),
                     );
-                  }),
-            ],
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ],

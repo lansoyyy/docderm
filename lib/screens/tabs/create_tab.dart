@@ -166,144 +166,155 @@ class _CreateTabState extends State<CreateTab> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 1000,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         border: Border.all(
           color: Colors.black,
         ),
       ),
-      height: 550,
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Column(
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          // Get the width of the container
+          double containerWidth = constraints.maxWidth;
+
+          // Adjust child elements based on available width
+          return Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                TextWidget(
-                  text: 'Create Post',
-                  fontSize: 24,
-                  fontFamily: 'Bold',
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                TextFieldWidget(
-                  label: 'Type here...',
-                  controller: desc,
-                  height: 350,
-                  width: 350,
-                  maxLine: 30,
-                ),
-                const Expanded(
-                  child: SizedBox(
-                    height: 10,
-                  ),
-                ),
-                Row(
+                // Left Column
+                Column(
                   mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    imageUrl != null
-                        ? ButtonWidget(
-                            height: 40,
-                            width: 100,
-                            fontSize: 14,
-                            label: 'Post',
-                            onPressed: () async {
-                              DocumentSnapshot documentSnapshot =
-                                  await FirebaseFirestore.instance
-                                      .collection('Users')
-                                      .doc(userId)
-                                      .get();
-                              final random = Random();
-                              addPost(
-                                  skinDiseases[random.nextInt(9)].name,
-                                  desc.text,
-                                  imageUrl,
-                                  documentSnapshot['name']);
-
-                              showToast('Succesfully posted!');
-                            },
-                          )
-                        : const SizedBox(),
+                    TextWidget(
+                      text: 'Create Post',
+                      fontSize: 24,
+                      fontFamily: 'Bold',
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    // Adjust width of text field dynamically
+                    TextFieldWidget(
+                      label: 'Type here...',
+                      controller: desc,
+                      height: 350,
+                      width: containerWidth *
+                          0.35, // Use percentage of container width
+                      maxLine: 30,
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        imageUrl != null
+                            ? ButtonWidget(
+                                height: 40,
+                                width: 100,
+                                fontSize: 14,
+                                label: 'Post',
+                                onPressed: () async {
+                                  DocumentSnapshot documentSnapshot =
+                                      await FirebaseFirestore.instance
+                                          .collection('Users')
+                                          .doc(userId)
+                                          .get();
+                                  final random = Random();
+                                  addPost(
+                                      skinDiseases[random.nextInt(9)].name,
+                                      desc.text,
+                                      imageUrl,
+                                      documentSnapshot['name']);
+                                  showToast('Succesfully posted!');
+                                },
+                              )
+                            : const SizedBox(),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
                   ],
                 ),
                 const SizedBox(
-                  height: 10,
+                  width: 30,
                 ),
+                // Right Column: Image section
+                imageUrl != null
+                    ? Container(
+                        height: containerWidth > 800
+                            ? 750
+                            : 500, // Adjust height for small screens
+                        width:
+                            containerWidth * 0.45, // Use percentage for width
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Colors.grey[300]!,
+                          ),
+                          borderRadius: BorderRadius.circular(20),
+                          image: DecorationImage(
+                              image: NetworkImage(imageUrl!),
+                              fit: BoxFit.cover),
+                        ),
+                      )
+                    : Container(
+                        height: containerWidth > 800 ? 750 : 500,
+                        width: containerWidth * 0.45,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Colors.grey[300]!,
+                          ),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            TextWidget(
+                              text: 'Drag and Drop an images or videos',
+                              fontSize: 18,
+                              fontFamily: 'Regular',
+                              color: Colors.grey,
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            TextWidget(
+                              text: 'or',
+                              fontSize: 14,
+                              fontFamily: 'Regular',
+                              color: Colors.grey,
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            TextButton.icon(
+                              icon: const Icon(
+                                Icons.upload,
+                                color: Colors.grey,
+                              ),
+                              onPressed: () {
+                                _uploadImage();
+                              },
+                              label: TextWidget(
+                                text: 'Upload ',
+                                fontSize: 14,
+                                fontFamily: 'Regular',
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
               ],
             ),
-            const SizedBox(
-              width: 30,
-            ),
-            imageUrl != null
-                ? Container(
-                    height: 750,
-                    width: 500,
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.grey[300]!,
-                      ),
-                      borderRadius: BorderRadius.circular(20),
-                      image: DecorationImage(
-                          image: NetworkImage(imageUrl!), fit: BoxFit.cover),
-                    ),
-                  )
-                : Container(
-                    height: 750,
-                    width: 500,
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.grey[300]!,
-                      ),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        TextWidget(
-                          text: 'Drag and Drop an images or videos',
-                          fontSize: 18,
-                          fontFamily: 'Regular',
-                          color: Colors.grey,
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        TextWidget(
-                          text: 'or',
-                          fontSize: 14,
-                          fontFamily: 'Regular',
-                          color: Colors.grey,
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        TextButton.icon(
-                          icon: const Icon(
-                            Icons.upload,
-                            color: Colors.grey,
-                          ),
-                          onPressed: () {
-                            _uploadImage();
-                          },
-                          label: TextWidget(
-                            text: 'Upload ',
-                            fontSize: 14,
-                            fontFamily: 'Regular',
-                            color: Colors.grey,
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
