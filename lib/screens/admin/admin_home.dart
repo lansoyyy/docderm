@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:docderm/screens/tabs/admin_community_tab.dart';
 import 'package:docderm/screens/tabs/chat_tab.dart';
 import 'package:docderm/screens/tabs/community_tab.dart';
 import 'package:docderm/screens/tabs/create_tab.dart';
@@ -49,7 +50,7 @@ class _AdminScreenState extends State<AdminScreen> {
 
     const SizedBox(),
     // const SizedBox(),
-    const CommunityTab(),
+    const AdminCommunityTab(),
   ];
 
   @override
