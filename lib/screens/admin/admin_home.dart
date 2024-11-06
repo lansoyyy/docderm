@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:docderm/screens/landing_screen.dart';
 import 'package:docderm/screens/tabs/admin_community_tab.dart';
 import 'package:docderm/screens/tabs/admin_dashboard_tab.dart';
 import 'package:docderm/screens/tabs/chat_tab.dart';
@@ -10,6 +11,7 @@ import 'package:docderm/services/create_community.dart';
 import 'package:docderm/utils/colors.dart';
 import 'package:docderm/utils/const.dart';
 import 'package:docderm/widgets/button_widget.dart';
+import 'package:docderm/widgets/logout_widget.dart';
 import 'package:docderm/widgets/text_widget.dart';
 import 'package:docderm/widgets/textfield_widget.dart';
 import 'package:flutter/material.dart';
@@ -95,6 +97,15 @@ class _AdminScreenState extends State<AdminScreen> {
                   Image.asset(
                     'assets/images/Group 358.png',
                     height: 25,
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      logout(context, const LandingScreen());
+                    },
+                    icon: const Icon(
+                      Icons.logout,
+                      color: Colors.white,
+                    ),
                   ),
                 ],
               ),

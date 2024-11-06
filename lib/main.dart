@@ -1,4 +1,3 @@
-import 'package:docderm/screens/admin/admin_home.dart';
 import 'package:docderm/screens/home_screen.dart';
 import 'package:docderm/screens/landing_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -34,7 +33,7 @@ class MyApp extends StatelessWidget {
             if (snapshot.hasData) {
               return const HomeScreen();
             } else {
-              return const AdminScreen();
+              return const LandingScreen();
             }
           }),
     );
