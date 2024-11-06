@@ -14,42 +14,29 @@ import 'package:intl/intl.dart';
 import 'package:sidebarx/sidebarx.dart';
 import 'package:tflite_web/tflite_web.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+class AdminScreen extends StatefulWidget {
+  const AdminScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<AdminScreen> createState() => _AdminScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _AdminScreenState extends State<AdminScreen> {
   @override
   void initState() {
     super.initState();
-    getmyData();
   }
 
   String myname = '';
   String mytype = '';
   String email = '';
 
-  getmyData() async {
-    DocumentSnapshot documentSnapshot =
-        await FirebaseFirestore.instance.collection('Users').doc(userId).get();
-
-    setState(() {
-      myname = documentSnapshot['name'];
-      mytype = documentSnapshot['type'];
-      email = documentSnapshot['email'];
-    });
-  }
-
   final searchController = TextEditingController();
   String nameSearched = '';
 
   List items = [
-    {'icon': Icons.home, 'name': 'Home'},
-    {'icon': Icons.create, 'name': 'Create'},
-    {'icon': Icons.chat_bubble_outline_outlined, 'name': 'Chat'},
+    {'icon': Icons.list, 'name': 'Post'},
+
     {'icon': Icons.notifications, 'name': 'Notifications'},
     // {'icon': Icons.history, 'name': 'Recent'},
     {'icon': Icons.groups_2_outlined, 'name': 'Community'},
@@ -59,8 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   List tabs = [
     const HomeTab(),
-    const CreateTab(),
-    const ChatTab(),
+
     const SizedBox(),
     // const SizedBox(),
     const CommunityTab(),
@@ -103,47 +89,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     'assets/images/Group 358.png',
                     height: 25,
                   ),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(10, 10, 0, 20),
-                      child: Container(
-                        height: 40,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(100),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          child: TextFormField(
-                            style: const TextStyle(
-                              color: Colors.black,
-                              fontFamily: 'Regular',
-                              fontSize: 14,
-                            ),
-                            onChanged: (value) {
-                              setState(() {
-                                nameSearched = value;
-                              });
-                            },
-                            decoration: const InputDecoration(
-                              border: InputBorder.none,
-                              labelStyle: TextStyle(color: Colors.black),
-                              hintText: 'Search DocDerm',
-                              hintStyle: TextStyle(
-                                fontFamily: 'Regular',
-                                fontSize: 16,
-                              ),
-                              prefixIcon: Icon(
-                                Icons.search,
-                                color: Colors.grey,
-                              ),
-                            ),
-                            controller: searchController,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
                 ],
               ),
             ),
@@ -173,7 +118,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               padding: const EdgeInsets.only(bottom: 20),
                               child: GestureDetector(
                                 onTap: () {
-                                  if (i == 3) {
+                                  if (i == 1) {
                                     showNotifs();
                                   } else {
                                     setState(() {
@@ -216,7 +161,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 PopupMenuItem(
                                   child: Row(
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                        CrossAxisAlignment.center,
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
                                       Image.asset(
@@ -224,34 +169,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                         height: 50,
                                       ),
                                       const SizedBox(width: 15),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        children: [
-                                          TextWidget(
-                                            text: myname,
-                                            fontSize: 16,
-                                            fontFamily: 'Bold',
-                                          ),
-                                          const SizedBox(height: 3),
-                                          TextWidget(
-                                            text: email,
-                                            fontSize: 12,
-                                            fontFamily: 'Regular',
-                                            color: Colors.grey,
-                                            isItalize: true,
-                                          ),
-                                          const SizedBox(height: 3),
-                                          TextWidget(
-                                            text: mytype,
-                                            fontSize: 12,
-                                            fontFamily: 'Regular',
-                                            color: Colors.grey,
-                                            isItalize: true,
-                                          ),
-                                        ],
+                                      TextWidget(
+                                        text: 'Administrator',
+                                        fontSize: 16,
+                                        fontFamily: 'Bold',
                                       ),
                                     ],
                                   ),
@@ -288,7 +209,8 @@ class _HomeScreenState extends State<HomeScreen> {
               padding: const EdgeInsets.all(20.0),
               child: StreamBuilder<QuerySnapshot>(
                   stream: FirebaseFirestore.instance
-                      .collection('Notifs')
+                      .collection('Post')
+
                       // .where('otherUserId', isEqualTo: userId)
                       .snapshots(),
                   builder: (BuildContext context,
@@ -335,21 +257,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                   width: 10,
                                 ),
                                 TextWidget(
-                                  text: data.docs[i]['msg'],
+                                  text:
+                                      '${data.docs[i]['myname']} created a post',
                                   fontSize: 16,
                                   fontFamily: 'Bold',
                                   maxLines: 3,
-                                ),
-                                const Expanded(
-                                  child: SizedBox(
-                                    width: 10,
-                                  ),
-                                ),
-                                TextWidget(
-                                  text: DateFormat.yMMMd().add_jm().format(
-                                      data.docs[i]['dateTime'].toDate()),
-                                  fontSize: 14,
-                                  fontFamily: 'Medium',
                                 ),
                               ],
                             ),

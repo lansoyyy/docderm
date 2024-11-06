@@ -1,3 +1,4 @@
+import 'package:docderm/screens/admin/admin_home.dart';
 import 'package:docderm/screens/home_screen.dart';
 import 'package:docderm/services/add_user.dart';
 import 'package:docderm/utils/colors.dart';
@@ -66,19 +67,42 @@ class _LandingScreenState extends State<LandingScreen> {
                       height: isMobile ? 20 : 25, // Smaller height for mobile
                     ),
                     const SizedBox(),
-                    ButtonWidget(
-                      height: isMobile ? 35 : 40, // Smaller button for mobile
-                      width: isMobile ? 80 : 100,
-                      fontSize: isMobile ? 12 : 14,
-                      label: 'Signup',
-                      onPressed: () {
-                        showDialog(
-                          context: context,
-                          builder: (context) {
-                            return Dialog(child: register());
+                    Row(
+                      children: [
+                        ButtonWidget(
+                          height:
+                              isMobile ? 35 : 40, // Smaller button for mobile
+                          width: isMobile ? 80 : 100,
+                          fontSize: isMobile ? 12 : 14,
+                          label: 'Signup',
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return Dialog(child: register());
+                              },
+                            );
                           },
-                        );
-                      },
+                        ),
+                        const SizedBox(
+                          width: 20,
+                        ),
+                        ButtonWidget(
+                          height:
+                              isMobile ? 35 : 40, // Smaller button for mobile
+                          width: isMobile ? 80 : 100,
+                          fontSize: isMobile ? 12 : 14,
+                          label: 'Continue as Admin',
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return Dialog(child: admin());
+                              },
+                            );
+                          },
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -801,6 +825,73 @@ Other Terms and Policies
                   onPressed: () {
                     Navigator.pop(context);
                     registerUser(context);
+                  },
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+              ],
+            ),
+          ),
+        );
+      }),
+    );
+  }
+
+  final email = TextEditingController();
+  final adminpassword = TextEditingController();
+  Widget admin() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 30, bottom: 30),
+      child: StatefulBuilder(builder: (context, setState) {
+        return SizedBox(
+          height: 400,
+          width: 350,
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(
+                  Icons.account_circle,
+                  size: 75,
+                ),
+                TextWidget(
+                  text: 'Admin Account',
+                  fontSize: 32,
+                  fontFamily: 'Bold',
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                TextFieldWidget(
+                  label: 'Email  ',
+                  controller: email,
+                ),
+                TextFieldWidget(
+                  isObscure: true,
+                  showEye: true,
+                  label: 'Password  ',
+                  controller: adminpassword,
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                ButtonWidget(
+                  width: 300,
+                  label: 'Continue',
+                  onPressed: () {
+                    Navigator.pop(context);
+                    if (email.text == 'admin@docderm.com' &&
+                        adminpassword.text == 'docderm') {
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                            builder: (context) => const AdminScreen()),
+                      );
+                    } else {
+                      showToast('Invalid admin credentails');
+                    }
                   },
                 ),
                 const SizedBox(
