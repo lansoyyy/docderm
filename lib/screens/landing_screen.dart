@@ -43,6 +43,8 @@ class _LandingScreenState extends State<LandingScreen> {
   final password = TextEditingController();
   final name = TextEditingController();
   final number = TextEditingController();
+
+  bool isDermatologist = false;
   @override
   Widget build(BuildContext context) {
     // Define breakpoints for mobile
@@ -731,63 +733,84 @@ Other Terms and Policies
   Widget register() {
     return Padding(
       padding: const EdgeInsets.only(top: 30, bottom: 30),
-      child: SizedBox(
-        height: 500,
-        width: 350,
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Icon(
-                Icons.account_circle,
-                size: 75,
-              ),
-              TextWidget(
-                text: 'Create Account',
-                fontSize: 32,
-                fontFamily: 'Bold',
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              TextFieldWidget(
-                label: 'Fullname  ',
-                controller: name,
-              ),
-              TextFieldWidget(
-                label: 'Contact Number  ',
-                controller: number,
-              ),
-              TextFieldWidget(
-                label: 'Email  ',
-                controller: username,
-              ),
-              TextFieldWidget(
-                isObscure: true,
-                showEye: true,
-                label: 'Password  ',
-                controller: password,
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              ButtonWidget(
-                width: 300,
-                label: 'Register',
-                onPressed: () {
-                  Navigator.pop(context);
-                  registerUser(context);
-                },
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-            ],
+      child: StatefulBuilder(builder: (context, setState) {
+        return SizedBox(
+          height: 500,
+          width: 350,
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(
+                  Icons.account_circle,
+                  size: 75,
+                ),
+                TextWidget(
+                  text: 'Create Account',
+                  fontSize: 32,
+                  fontFamily: 'Bold',
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                TextFieldWidget(
+                  label: 'Fullname  ',
+                  controller: name,
+                ),
+                TextFieldWidget(
+                  label: 'Contact Number  ',
+                  controller: number,
+                ),
+                TextFieldWidget(
+                  label: 'Email  ',
+                  controller: username,
+                ),
+                TextFieldWidget(
+                  isObscure: true,
+                  showEye: true,
+                  label: 'Password  ',
+                  controller: password,
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                SwitchListTile(
+                  title: TextWidget(
+                    text: isDermatologist ? "Dermatologist" : "Patient",
+                    fontSize: 14,
+                  ),
+                  subtitle: TextWidget(
+                    text: "Switch to select user type",
+                    fontSize: 14,
+                  ),
+                  value: isDermatologist,
+                  onChanged: (bool value) {
+                    setState(() {
+                      isDermatologist = value;
+                    });
+                  },
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                ButtonWidget(
+                  width: 300,
+                  label: 'Register',
+                  onPressed: () {
+                    Navigator.pop(context);
+                    registerUser(context);
+                  },
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+              ],
+            ),
           ),
-        ),
-      ),
+        );
+      }),
     );
   }
 
@@ -796,7 +819,8 @@ Other Terms and Policies
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: username.text, password: password.text);
 
-      addUser(name.text, username.text, number.text);
+      addUser(name.text, username.text, number.text,
+          isDermatologist ? 'Dermatologist' : 'Patient');
 
       // signup(nameController.text, numberController.text, addressController.text,
       //     emailController.text);

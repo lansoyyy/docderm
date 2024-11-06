@@ -3,7 +3,7 @@ import 'package:docderm/utils/const.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 
-Future addUser(name, email, number) async {
+Future addUser(name, email, number, type) async {
   final docUser = FirebaseFirestore.instance.collection('Users').doc(userId);
 
   final json = {
@@ -15,6 +15,7 @@ Future addUser(name, email, number) async {
     'favs': [],
     'profile': '',
     'community': [],
+    'type': type,
   };
 
   await docUser.set(json);

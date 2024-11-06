@@ -29,6 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   String myname = '';
+  String mytype = '';
   String email = '';
 
   getmyData() async {
@@ -37,6 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     setState(() {
       myname = documentSnapshot['name'];
+      mytype = documentSnapshot['type'];
       email = documentSnapshot['email'];
     });
   }
@@ -238,6 +240,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                           const SizedBox(height: 3),
                                           TextWidget(
                                             text: email,
+                                            fontSize: 12,
+                                            fontFamily: 'Regular',
+                                            color: Colors.grey,
+                                            isItalize: true,
+                                          ),
+                                          const SizedBox(height: 3),
+                                          TextWidget(
+                                            text: mytype,
                                             fontSize: 12,
                                             fontFamily: 'Regular',
                                             color: Colors.grey,
