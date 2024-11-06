@@ -4,6 +4,7 @@ import 'package:docderm/screens/tabs/chat_tab.dart';
 import 'package:docderm/screens/tabs/community_tab.dart';
 import 'package:docderm/screens/tabs/create_tab.dart';
 import 'package:docderm/screens/tabs/home_tab.dart';
+import 'package:docderm/screens/tabs/users_tab.dart';
 import 'package:docderm/services/create_community.dart';
 import 'package:docderm/utils/colors.dart';
 import 'package:docderm/utils/const.dart';
@@ -41,6 +42,7 @@ class _AdminScreenState extends State<AdminScreen> {
     {'icon': Icons.notifications, 'name': 'Notifications'},
     // {'icon': Icons.history, 'name': 'Recent'},
     {'icon': Icons.groups_2_outlined, 'name': 'Community'},
+    {'icon': Icons.account_box_outlined, 'name': 'User Management'},
   ];
 
   int index = 0;
@@ -51,6 +53,7 @@ class _AdminScreenState extends State<AdminScreen> {
     const SizedBox(),
     // const SizedBox(),
     const AdminCommunityTab(),
+    const UsersTab(),
   ];
 
   @override
