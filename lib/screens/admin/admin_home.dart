@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:docderm/screens/tabs/admin_community_tab.dart';
+import 'package:docderm/screens/tabs/admin_dashboard_tab.dart';
 import 'package:docderm/screens/tabs/chat_tab.dart';
 import 'package:docderm/screens/tabs/community_tab.dart';
 import 'package:docderm/screens/tabs/create_tab.dart';
@@ -37,6 +38,7 @@ class _AdminScreenState extends State<AdminScreen> {
   String nameSearched = '';
 
   List items = [
+    {'icon': Icons.dashboard_outlined, 'name': 'Dashboard'},
     {'icon': Icons.list, 'name': 'Post'},
 
     {'icon': Icons.notifications, 'name': 'Notifications'},
@@ -48,6 +50,7 @@ class _AdminScreenState extends State<AdminScreen> {
   int index = 0;
 
   List tabs = [
+    const AdminDashboardTab(),
     const HomeTab(),
 
     const SizedBox(),
@@ -122,7 +125,7 @@ class _AdminScreenState extends State<AdminScreen> {
                               padding: const EdgeInsets.only(bottom: 20),
                               child: GestureDetector(
                                 onTap: () {
-                                  if (i == 1) {
+                                  if (i == 2) {
                                     showNotifs();
                                   } else {
                                     setState(() {
