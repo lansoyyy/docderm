@@ -308,53 +308,56 @@ class _HomeScreenState extends State<HomeScreen> {
                     }
 
                     final data = snapshot.requireData;
-                    return Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        TextWidget(
-                          text: 'Notifications',
-                          fontSize: 18,
-                          fontFamily: 'Bold',
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        for (int i = 0; i < data.docs.length; i++)
-                          Padding(
-                            padding: const EdgeInsets.only(top: 10, bottom: 10),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                const Icon(
-                                  Icons.notifications,
-                                  size: 50,
-                                  color: Colors.red,
-                                ),
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                                TextWidget(
-                                  text: data.docs[i]['msg'],
-                                  fontSize: 16,
-                                  fontFamily: 'Bold',
-                                  maxLines: 3,
-                                ),
-                                const Expanded(
-                                  child: SizedBox(
+                    return SingleChildScrollView(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          TextWidget(
+                            text: 'Notifications',
+                            fontSize: 18,
+                            fontFamily: 'Bold',
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          for (int i = 0; i < data.docs.length; i++)
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(top: 10, bottom: 10),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  const Icon(
+                                    Icons.notifications,
+                                    size: 50,
+                                    color: Colors.red,
+                                  ),
+                                  const SizedBox(
                                     width: 10,
                                   ),
-                                ),
-                                TextWidget(
-                                  text: DateFormat.yMMMd().add_jm().format(
-                                      data.docs[i]['dateTime'].toDate()),
-                                  fontSize: 14,
-                                  fontFamily: 'Medium',
-                                ),
-                              ],
+                                  TextWidget(
+                                    text: data.docs[i]['msg'],
+                                    fontSize: 16,
+                                    fontFamily: 'Bold',
+                                    maxLines: 3,
+                                  ),
+                                  const Expanded(
+                                    child: SizedBox(
+                                      width: 10,
+                                    ),
+                                  ),
+                                  TextWidget(
+                                    text: DateFormat.yMMMd().add_jm().format(
+                                        data.docs[i]['dateTime'].toDate()),
+                                    fontSize: 14,
+                                    fontFamily: 'Medium',
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                      ],
+                        ],
+                      ),
                     );
                   }),
             ),

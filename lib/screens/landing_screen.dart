@@ -74,6 +74,24 @@ class _LandingScreenState extends State<LandingScreen> {
                               isMobile ? 35 : 40, // Smaller button for mobile
                           width: isMobile ? 80 : 100,
                           fontSize: isMobile ? 12 : 14,
+                          label: 'Login',
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return Dialog(child: login());
+                              },
+                            );
+                          },
+                        ),
+                        const SizedBox(
+                          width: 20,
+                        ),
+                        ButtonWidget(
+                          height:
+                              isMobile ? 35 : 40, // Smaller button for mobile
+                          width: isMobile ? 80 : 100,
+                          fontSize: isMobile ? 12 : 14,
                           label: 'Signup',
                           onPressed: () {
                             showDialog(
@@ -364,13 +382,13 @@ class _LandingScreenState extends State<LandingScreen> {
           child: Column(
             children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Image.asset(
                     'assets/images/Group 358.png',
                     height: 25,
                   ),
-                  const SizedBox(),
+                  const Expanded(child: SizedBox()),
                   ButtonWidget(
                     height: 40,
                     width: 100,
@@ -381,6 +399,23 @@ class _LandingScreenState extends State<LandingScreen> {
                         context: context,
                         builder: (context) {
                           return Dialog(child: register());
+                        },
+                      );
+                    },
+                  ),
+                  const SizedBox(
+                    width: 20,
+                  ),
+                  ButtonWidget(
+                    height: 40,
+                    width: 100,
+                    fontSize: 14,
+                    label: 'Login',
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return Dialog(child: login());
                         },
                       );
                     },
@@ -838,6 +873,63 @@ Other Terms and Policies
     );
   }
 
+  Widget login() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 30, bottom: 30),
+      child: StatefulBuilder(builder: (context, setState) {
+        return SizedBox(
+          height: 380,
+          width: 350,
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(
+                  Icons.account_circle,
+                  size: 75,
+                ),
+                TextWidget(
+                  text: 'Login',
+                  fontSize: 32,
+                  fontFamily: 'Bold',
+                ),
+                TextFieldWidget(
+                  label: 'Email  ',
+                  controller: username,
+                ),
+                TextFieldWidget(
+                  isObscure: true,
+                  showEye: true,
+                  label: 'Password  ',
+                  controller: password,
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                ButtonWidget(
+                  width: 300,
+                  label: 'Login',
+                  onPressed: () {
+                    Navigator.pop(context);
+                    loginUser(context);
+                  },
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+              ],
+            ),
+          ),
+        );
+      }),
+    );
+  }
+
   final email = TextEditingController();
   final adminpassword = TextEditingController();
   Widget admin() {
@@ -913,6 +1005,35 @@ Other Terms and Policies
       addUser(name.text, username.text, number.text,
           isDermatologist ? 'Dermatologist' : 'Patient');
 
+      // signup(nameController.text, numberController.text, addressController.text,
+      //     emailController.text);
+
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: username.text, password: password.text);
+
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
+      );
+      showToast("Registered Successfully!");
+
+      Navigator.pop(context);
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        showToast('The password provided is too weak.');
+      } else if (e.code == 'email-already-in-use') {
+        showToast('The account already exists for that email.');
+      } else if (e.code == 'invalid-email') {
+        showToast('The email address is not valid.');
+      } else {
+        showToast(e.toString());
+      }
+    } on Exception catch (e) {
+      showToast("An error occurred: $e");
+    }
+  }
+
+  loginUser(context) async {
+    try {
       // signup(nameController.text, numberController.text, addressController.text,
       //     emailController.text);
 
