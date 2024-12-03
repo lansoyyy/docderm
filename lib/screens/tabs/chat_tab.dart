@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:docderm/services/add_messages.dart';
 import 'package:docderm/utils/const.dart';
 import 'package:docderm/widgets/text_widget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' show DateFormat, toBeginningOfSentenceCase;
 
@@ -95,7 +96,9 @@ class _ChatTabState extends State<ChatTab> {
                             child: StreamBuilder<QuerySnapshot>(
                               stream: FirebaseFirestore.instance
                                   .collection('Users')
-                                  .where('id', isNotEqualTo: userId)
+                                  .where('id',
+                                      isNotEqualTo: FirebaseAuth
+                                          .instance.currentUser!.uid)
                                   .where('name',
                                       isGreaterThanOrEqualTo:
                                           toBeginningOfSentenceCase(
@@ -168,7 +171,9 @@ class _ChatTabState extends State<ChatTab> {
                             child: StreamBuilder<QuerySnapshot>(
                               stream: FirebaseFirestore.instance
                                   .collection('Chats')
-                                  .where('ids', arrayContains: userId)
+                                  .where('ids',
+                                      arrayContains: FirebaseAuth
+                                          .instance.currentUser!.uid)
                                   .orderBy('dateTime', descending: true)
                                   .snapshots(),
                               builder: (BuildContext context,
@@ -199,7 +204,8 @@ class _ChatTabState extends State<ChatTab> {
                                         itemBuilder: (context, index) {
                                           bool isSender = filteredDocs[index]
                                                   ['sender'] ==
-                                              userId;
+                                              FirebaseAuth
+                                                  .instance.currentUser!.uid;
                                           return Align(
                                             alignment: isSender
                                                 ? Alignment.centerRight
@@ -290,7 +296,8 @@ class _ChatTabState extends State<ChatTab> {
                                                   await FirebaseFirestore
                                                       .instance
                                                       .collection('Users')
-                                                      .doc(userId)
+                                                      .doc(FirebaseAuth.instance
+                                                          .currentUser!.uid)
                                                       .get();
                                               addMessages(id, msg.text,
                                                   documentSnapshot['name']);

@@ -6,6 +6,7 @@ import 'package:docderm/widgets/button_widget.dart';
 import 'package:docderm/widgets/text_widget.dart';
 import 'package:docderm/widgets/textfield_widget.dart';
 import 'package:docderm/widgets/toast_widget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
@@ -222,7 +223,8 @@ class _CreateTabState extends State<CreateTab> {
                                   DocumentSnapshot documentSnapshot =
                                       await FirebaseFirestore.instance
                                           .collection('Users')
-                                          .doc(userId)
+                                          .doc(FirebaseAuth
+                                              .instance.currentUser!.uid)
                                           .get();
                                   final random = Random();
                                   addPost(

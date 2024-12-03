@@ -9,7 +9,7 @@ Future<String> addCommunity(name) async {
   final json = {
     'name': name,
     'id': docUser.id,
-    'members': [userId],
+    'members': [FirebaseAuth.instance.currentUser!.uid],
   };
 
   await docUser.set(json);

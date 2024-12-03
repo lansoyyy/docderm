@@ -14,6 +14,7 @@ import 'package:docderm/widgets/button_widget.dart';
 import 'package:docderm/widgets/logout_widget.dart';
 import 'package:docderm/widgets/text_widget.dart';
 import 'package:docderm/widgets/textfield_widget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:sidebarx/sidebarx.dart';
@@ -83,135 +84,139 @@ class _AdminScreenState extends State<AdminScreen> {
               },
             )
           : null,
-      body: Column(
-        children: [
-          Container(
-            width: double.infinity,
-            height: 80,
-            color: secondary,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Image.asset(
-                    'assets/images/Group 358.png',
-                    height: 25,
-                  ),
-                  IconButton(
-                    onPressed: () {
-                      logout(context, const LandingScreen());
-                    },
-                    icon: const Icon(
-                      Icons.logout,
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(height: 50),
-          LayoutBuilder(
-            builder: (context, constraints) {
-              return Padding(
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Container(
+              width: double.infinity,
+              height: 80,
+              color: secondary,
+              child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Container(
-                      width: constraints.maxWidth *
-                          0.2, // Adjust width proportionally
-                      height: 500,
-                      decoration: BoxDecoration(
-                        color: secondary,
-                        borderRadius: BorderRadius.circular(10),
+                    Image.asset(
+                      'assets/images/Group 358.png',
+                      height: 25,
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        logout(context, const LandingScreen());
+                      },
+                      icon: const Icon(
+                        Icons.logout,
+                        color: Colors.white,
                       ),
-                      child: Column(
-                        children: [
-                          const SizedBox(height: 20),
-                          for (int i = 0; i < items.length; i++)
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 20),
-                              child: GestureDetector(
-                                onTap: () {
-                                  if (i == 2) {
-                                    showNotifs();
-                                  } else {
-                                    setState(() {
-                                      index = i;
-                                    });
-                                  }
-                                },
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      items[i]['icon'],
-                                      size: 25,
-                                      color: index == i
-                                          ? Colors.white
-                                          : Colors.black,
-                                    ),
-                                    TextWidget(
-                                      text: items[i]['name'],
-                                      fontSize: 12,
-                                      fontFamily:
-                                          index == i ? 'Bold' : 'Medium',
-                                      color: index == i
-                                          ? Colors.white
-                                          : Colors.black,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          const Expanded(child: SizedBox(height: 20)),
-                          PopupMenuButton(
-                            icon: Image.asset(
-                              'assets/images/image 344.png',
-                              height: 50,
-                            ),
-                            itemBuilder: (context) {
-                              return [
-                                PopupMenuItem(
-                                  child: Row(
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 50),
+            LayoutBuilder(
+              builder: (context, constraints) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 30),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        width: constraints.maxWidth *
+                            0.2, // Adjust width proportionally
+                        height: 500,
+                        decoration: BoxDecoration(
+                          color: secondary,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Column(
+                          children: [
+                            const SizedBox(height: 20),
+                            for (int i = 0; i < items.length; i++)
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 20),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    if (i == 2) {
+                                      showNotifs();
+                                    } else {
+                                      setState(() {
+                                        index = i;
+                                      });
+                                    }
+                                  },
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
                                     crossAxisAlignment:
                                         CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
-                                      Image.asset(
-                                        'assets/images/image 344.png',
-                                        height: 50,
+                                      Icon(
+                                        items[i]['icon'],
+                                        size: 25,
+                                        color: index == i
+                                            ? Colors.white
+                                            : Colors.black,
                                       ),
-                                      const SizedBox(width: 15),
                                       TextWidget(
-                                        text: 'Administrator',
-                                        fontSize: 16,
-                                        fontFamily: 'Bold',
+                                        text: items[i]['name'],
+                                        fontSize: 12,
+                                        fontFamily:
+                                            index == i ? 'Bold' : 'Medium',
+                                        color: index == i
+                                            ? Colors.white
+                                            : Colors.black,
                                       ),
                                     ],
                                   ),
                                 ),
-                              ];
-                            },
-                          ),
-                          const SizedBox(height: 20),
-                        ],
+                              ),
+                            const Expanded(child: SizedBox(height: 20)),
+                            PopupMenuButton(
+                              icon: Image.asset(
+                                'assets/images/image 344.png',
+                                height: 50,
+                              ),
+                              itemBuilder: (context) {
+                                return [
+                                  PopupMenuItem(
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        Image.asset(
+                                          'assets/images/image 344.png',
+                                          height: 50,
+                                        ),
+                                        const SizedBox(width: 15),
+                                        TextWidget(
+                                          text: 'Administrator',
+                                          fontSize: 16,
+                                          fontFamily: 'Bold',
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ];
+                              },
+                            ),
+                            const SizedBox(height: 20),
+                          ],
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: 30),
-                    Expanded(
-                      child: tabs[index],
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
-        ],
+                      const SizedBox(width: 30),
+                      Expanded(
+                        child: tabs[index],
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -248,43 +253,46 @@ class _AdminScreenState extends State<AdminScreen> {
                     }
 
                     final data = snapshot.requireData;
-                    return Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        TextWidget(
-                          text: 'Notifications',
-                          fontSize: 18,
-                          fontFamily: 'Bold',
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        for (int i = 0; i < data.docs.length; i++)
-                          Padding(
-                            padding: const EdgeInsets.only(top: 10, bottom: 10),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                const Icon(
-                                  Icons.notifications,
-                                  size: 50,
-                                  color: Colors.red,
-                                ),
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                                TextWidget(
-                                  text:
-                                      '${data.docs[i]['myname']} created a post',
-                                  fontSize: 16,
-                                  fontFamily: 'Bold',
-                                  maxLines: 3,
-                                ),
-                              ],
-                            ),
+                    return SingleChildScrollView(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          TextWidget(
+                            text: 'Notifications',
+                            fontSize: 18,
+                            fontFamily: 'Bold',
                           ),
-                      ],
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          for (int i = 0; i < data.docs.length; i++)
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(top: 10, bottom: 10),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  const Icon(
+                                    Icons.notifications,
+                                    size: 50,
+                                    color: Colors.red,
+                                  ),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  TextWidget(
+                                    text:
+                                        '${data.docs[i]['myname']} created a post',
+                                    fontSize: 16,
+                                    fontFamily: 'Bold',
+                                    maxLines: 3,
+                                  ),
+                                ],
+                              ),
+                            ),
+                        ],
+                      ),
                     );
                   }),
             ),
@@ -332,7 +340,7 @@ class _AdminScreenState extends State<AdminScreen> {
 
                   await FirebaseFirestore.instance
                       .collection('Users')
-                      .doc(userId)
+                      .doc()
                       .update({
                     'community': FieldValue.arrayUnion([id]),
                   });

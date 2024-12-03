@@ -1,4 +1,5 @@
 import 'package:docderm/screens/landing_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 logout(BuildContext context, Widget navigationRoute) {
@@ -25,6 +26,7 @@ logout(BuildContext context, Widget navigationRoute) {
               ),
               MaterialButton(
                 onPressed: () async {
+                  await FirebaseAuth.instance.signOut();
                   Navigator.of(context).pushReplacement(
                     MaterialPageRoute(
                         builder: (context) => const LandingScreen()),

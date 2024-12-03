@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:docderm/screens/landing_screen.dart';
 import 'package:docderm/screens/tabs/chat_tab.dart';
 import 'package:docderm/screens/tabs/community_tab.dart';
 import 'package:docderm/screens/tabs/create_tab.dart';
@@ -7,8 +8,10 @@ import 'package:docderm/services/create_community.dart';
 import 'package:docderm/utils/colors.dart';
 import 'package:docderm/utils/const.dart';
 import 'package:docderm/widgets/button_widget.dart';
+import 'package:docderm/widgets/logout_widget.dart';
 import 'package:docderm/widgets/text_widget.dart';
 import 'package:docderm/widgets/textfield_widget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:sidebarx/sidebarx.dart';
@@ -33,8 +36,10 @@ class _HomeScreenState extends State<HomeScreen> {
   String email = '';
 
   getmyData() async {
-    DocumentSnapshot documentSnapshot =
-        await FirebaseFirestore.instance.collection('Users').doc(userId).get();
+    DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance
+        .collection('Users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .get();
 
     setState(() {
       myname = documentSnapshot['name'];
@@ -142,6 +147,15 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                       ),
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      logout(context, const LandingScreen());
+                    },
+                    icon: const Icon(
+                      Icons.logout,
+                      color: Colors.white,
                     ),
                   ),
                 ],
@@ -289,7 +303,8 @@ class _HomeScreenState extends State<HomeScreen> {
               child: StreamBuilder<QuerySnapshot>(
                   stream: FirebaseFirestore.instance
                       .collection('Notifs')
-                      // .where('otherUserId', isEqualTo: userId)
+                      .where('otherUserId',
+                          isEqualTo: FirebaseAuth.instance.currentUser!.uid)
                       .snapshots(),
                   builder: (BuildContext context,
                       AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -405,7 +420,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                   await FirebaseFirestore.instance
                       .collection('Users')
-                      .doc(userId)
+                      .doc(FirebaseAuth.instance.currentUser!.uid)
                       .update({
                     'community': FieldValue.arrayUnion([id]),
                   });

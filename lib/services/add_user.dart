@@ -1,10 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:docderm/utils/const.dart';
-
 import 'package:firebase_auth/firebase_auth.dart';
 
 Future addUser(name, email, number, type) async {
-  final docUser = FirebaseFirestore.instance.collection('Users').doc(userId);
+  final currentUser = FirebaseAuth.instance.currentUser;
+  if (currentUser == null) {
+    throw Exception("User is not logged in. Cannot add user to Firestore.");
+  }
+
+  final docUser =
+      FirebaseFirestore.instance.collection('Users').doc(currentUser.uid);
 
   final json = {
     'name': name,

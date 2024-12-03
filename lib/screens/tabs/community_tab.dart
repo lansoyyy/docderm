@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:docderm/utils/colors.dart';
 import 'package:docderm/utils/const.dart';
 import 'package:docderm/widgets/text_widget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class CommunityTab extends StatelessWidget {
@@ -106,7 +107,8 @@ class CommunityTab extends StatelessWidget {
                 StreamBuilder<QuerySnapshot>(
                   stream: FirebaseFirestore.instance
                       .collection('Community')
-                      .where('members', arrayContains: userId)
+                      .where('members',
+                          arrayContains: FirebaseAuth.instance.currentUser!.uid)
                       .snapshots(),
                   builder: (BuildContext context,
                       AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -246,7 +248,8 @@ class CommunityTab extends StatelessWidget {
                                 for (int i = 0; i < data.docs.length; i++)
                                   Builder(builder: (context) {
                                     List members = data.docs[i]['members'];
-                                    return members.contains(userId)
+                                    return members.contains(FirebaseAuth
+                                            .instance.currentUser!.uid)
                                         ? const SizedBox()
                                         : Padding(
                                             padding: const EdgeInsets.only(
@@ -321,7 +324,10 @@ class CommunityTab extends StatelessWidget {
                                                                     .instance
                                                                     .collection(
                                                                         'Users')
-                                                                    .doc(userId)
+                                                                    .doc(FirebaseAuth
+                                                                        .instance
+                                                                        .currentUser!
+                                                                        .uid)
                                                                     .update({
                                                                   'community':
                                                                       FieldValue
@@ -341,7 +347,10 @@ class CommunityTab extends StatelessWidget {
                                                                   'members':
                                                                       FieldValue
                                                                           .arrayUnion([
-                                                                    userId
+                                                                    FirebaseAuth
+                                                                        .instance
+                                                                        .currentUser!
+                                                                        .uid
                                                                   ]),
                                                                 });
                                                                 // Call the function to join the community

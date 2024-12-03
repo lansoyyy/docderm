@@ -12,8 +12,8 @@ Future<String> addPost(title, desc, img, myname) async {
     'desc': desc,
     'img': img,
     'id': docUser.id,
-    'userId': userId,
-    'members': [userId],
+    'userId': FirebaseAuth.instance.currentUser!.uid,
+    'members': [FirebaseAuth.instance.currentUser!.uid],
   };
 
   await docUser.set(json);

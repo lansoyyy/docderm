@@ -858,7 +858,6 @@ Other Terms and Policies
                   width: 300,
                   label: 'Register',
                   onPressed: () {
-                    Navigator.pop(context);
                     registerUser(context);
                   },
                 ),
@@ -915,8 +914,7 @@ Other Terms and Policies
                   width: 300,
                   label: 'Login',
                   onPressed: () {
-                    Navigator.pop(context);
-                    loginUser(context);
+                    loginUser();
                   },
                 ),
                 const SizedBox(
@@ -998,22 +996,21 @@ Other Terms and Policies
   }
 
   registerUser(context) async {
+    if (username.text.isEmpty ||
+        password.text.isEmpty ||
+        name.text.isEmpty ||
+        number.text.isEmpty) {
+      showToast("Please fill in all the required fields.");
+      return;
+    }
+
     try {
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: username.text, password: password.text);
 
-      addUser(name.text, username.text, number.text,
+      await addUser(name.text, username.text, number.text,
           isDermatologist ? 'Dermatologist' : 'Patient');
 
-      // signup(nameController.text, numberController.text, addressController.text,
-      //     emailController.text);
-
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: username.text, password: password.text);
-
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const HomeScreen()),
-      );
       showToast("Registered Successfully!");
 
       Navigator.pop(context);
@@ -1032,29 +1029,32 @@ Other Terms and Policies
     }
   }
 
-  loginUser(context) async {
+  loginUser() async {
+    if (username.text.isEmpty || password.text.isEmpty) {
+      showToast("Please enter both email and password.");
+      return;
+    }
+
     try {
-      // signup(nameController.text, numberController.text, addressController.text,
-      //     emailController.text);
+      UserCredential userCredential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(
+              email: username.text, password: password.text);
 
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: username.text, password: password.text);
-
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const HomeScreen()),
-      );
-      showToast("Registered Successfully!");
-
-      Navigator.pop(context);
+      if (context.mounted) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const HomeScreen()),
+        );
+      }
+      showToast("Logged in Successfully!");
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'weak-password') {
-        showToast('The password provided is too weak.');
-      } else if (e.code == 'email-already-in-use') {
-        showToast('The account already exists for that email.');
+      if (e.code == 'user-not-found') {
+        showToast('No user found for that email.');
+      } else if (e.code == 'wrong-password') {
+        showToast('Wrong password provided for that user.');
       } else if (e.code == 'invalid-email') {
         showToast('The email address is not valid.');
       } else {
-        showToast(e.toString());
+        showToast(e.message ?? "An unknown error occurred.");
       }
     } on Exception catch (e) {
       showToast("An error occurred: $e");

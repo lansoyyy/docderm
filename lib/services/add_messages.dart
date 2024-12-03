@@ -8,11 +8,11 @@ Future<String> addMessages(otherUserId, msg, myname) async {
   final docUser = FirebaseFirestore.instance.collection('Chats').doc();
 
   final json = {
-    'sender': userId,
+    'sender': FirebaseAuth.instance.currentUser!.uid,
     'msg': msg,
     'dateTime': DateTime.now(),
     'id': docUser.id,
-    'ids': [userId, otherUserId],
+    'ids': [FirebaseAuth.instance.currentUser!.uid, otherUserId],
   };
 
   addNotif(otherUserId, myname);
