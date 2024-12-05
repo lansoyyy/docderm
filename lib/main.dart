@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
             if (snapshot.hasData) {
               return const HomeScreen();
             } else {
-              return const AdminScreen();
+              return const LandingScreen();
             }
           }),
     );
